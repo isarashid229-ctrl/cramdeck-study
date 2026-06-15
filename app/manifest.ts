@@ -1,13 +1,18 @@
 import type { MetadataRoute } from "next";
 
+export const dynamic = "force-static";
+
 export default function manifest(): MetadataRoute.Manifest {
+  const basePath = process.env.GITHUB_PAGES === "true" ? "/cramdeck-study" : "";
+  const withBasePath = (path: string) => `${basePath}${path}`;
+
   return {
     name: "CramDeck Scholar",
     short_name: "CramDeck",
     description: "Academic study platform for assignments, quizzes, games, mastery tracking, and course management.",
-    id: "/dashboard",
-    start_url: "/dashboard",
-    scope: "/",
+    id: withBasePath("/dashboard"),
+    start_url: withBasePath("/dashboard"),
+    scope: `${basePath || "/"}`,
     display: "standalone",
     orientation: "any",
     background_color: "#f8fafc",
@@ -15,25 +20,25 @@ export default function manifest(): MetadataRoute.Manifest {
     categories: ["education", "productivity"],
     icons: [
       {
-        src: "/icon-192.png",
+        src: withBasePath("/icon-192.png"),
         sizes: "192x192",
         type: "image/png",
         purpose: "any",
       },
       {
-        src: "/icon-512.png",
+        src: withBasePath("/icon-512.png"),
         sizes: "512x512",
         type: "image/png",
         purpose: "any",
       },
       {
-        src: "/icon-maskable-192.png",
+        src: withBasePath("/icon-maskable-192.png"),
         sizes: "192x192",
         type: "image/png",
         purpose: "maskable",
       },
       {
-        src: "/icon-maskable-512.png",
+        src: withBasePath("/icon-maskable-512.png"),
         sizes: "512x512",
         type: "image/png",
         purpose: "maskable",
@@ -43,20 +48,20 @@ export default function manifest(): MetadataRoute.Manifest {
       {
         name: "Add Assignment",
         short_name: "Add",
-        url: "/assignments/new",
-        icons: [{ src: "/icon-192.png", sizes: "192x192", type: "image/png" }],
+        url: withBasePath("/assignments/new"),
+        icons: [{ src: withBasePath("/icon-192.png"), sizes: "192x192", type: "image/png" }],
       },
       {
         name: "Study Hub",
         short_name: "Study",
-        url: "/study",
-        icons: [{ src: "/icon-192.png", sizes: "192x192", type: "image/png" }],
+        url: withBasePath("/study"),
+        icons: [{ src: withBasePath("/icon-192.png"), sizes: "192x192", type: "image/png" }],
       },
       {
         name: "Test Me",
         short_name: "Test",
-        url: "/test-me",
-        icons: [{ src: "/icon-192.png", sizes: "192x192", type: "image/png" }],
+        url: withBasePath("/test-me"),
+        icons: [{ src: withBasePath("/icon-192.png"), sizes: "192x192", type: "image/png" }],
       },
     ],
   };

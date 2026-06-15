@@ -161,6 +161,43 @@ supabase/             # SQL schema and RLS policies
 - `POST /api/ai/extract-assignment` — structured assignment extraction (server-side only)
 - `POST /api/ai/generate-quiz` — OpenAI quiz generation with a local fallback
 
+## Deployment
+
+### GitHub Pages preview
+
+This repository includes a GitHub Actions workflow at `.github/workflows/deploy-pages.yml`.
+It builds a static export with:
+
+```bash
+GITHUB_PAGES=true npm run build
+```
+
+GitHub Pages is useful for a public preview of the app UI at:
+
+```text
+https://isarashid229-ctrl.github.io/cramdeck-study/
+```
+
+Because GitHub Pages is static hosting, it disables Next.js middleware and API routes. That means the Pages build can show the app shell, public pages, responsive layout, and client-side Supabase screens, but it is not the recommended production host for full auth redirects, server API routes, protected middleware, and OpenAI-backed actions.
+
+### Production deployment
+
+Use Vercel for the full Next.js app. Vercel supports the middleware, API routes, and server runtime that CramDeck Scholar uses.
+
+Required Vercel environment variables:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+```
+
+Optional:
+
+```env
+OPENAI_API_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+```
+
 ## Security
 
 - Row Level Security on all Supabase tables
