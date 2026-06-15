@@ -57,7 +57,7 @@ const navSections = [
     label: "Progress",
     items: [
       { href: "/analytics", label: "Analytics", icon: BarChart3 },
-      { href: "/profile", label: "Rewards", icon: Gift },
+      { href: "/rewards", label: "Rewards", icon: Gift },
       { href: "/avatar", label: "Avatar", icon: Wand2 },
     ],
   },

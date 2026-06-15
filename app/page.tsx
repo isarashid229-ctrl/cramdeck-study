@@ -17,6 +17,9 @@ export default function LandingPage() {
           </Link>
           <div className="flex items-center gap-3">
             <Button variant="ghost" asChild>
+              <Link href="/demo">View Demo</Link>
+            </Button>
+            <Button variant="ghost" asChild>
               <Link href="/auth/login">Log in</Link>
             </Button>
             <Button asChild>
@@ -38,6 +41,9 @@ export default function LandingPage() {
             </p>
             <Button size="lg" className="mt-8" asChild>
               <Link href="/auth/signup">Start for free</Link>
+            </Button>
+            <Button size="lg" variant="outline" className="ml-0 mt-3 sm:ml-3" asChild>
+              <Link href="/demo">Explore the demo</Link>
             </Button>
           </div>
         </section>

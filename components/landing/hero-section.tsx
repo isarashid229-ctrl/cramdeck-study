@@ -34,7 +34,7 @@ export function HeroSection() {
             </Link>
           </Button>
           <Button size="lg" variant="outline" asChild className="h-12 px-8 text-base">
-            <Link href="/auth/login">See Demo</Link>
+            <Link href="/demo">View Demo</Link>
           </Button>
         </div>
       </motion.div>

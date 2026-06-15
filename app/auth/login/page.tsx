@@ -102,6 +102,12 @@ function LoginForm() {
             Sign up
           </Link>
         </p>
+        <p className="mt-3 text-center text-sm text-muted-foreground">
+          Want to explore first?{" "}
+          <Link href="/demo" className="font-medium text-primary hover:underline">
+            View Demo
+          </Link>
+        </p>
       </CardContent>
     </Card>
   );

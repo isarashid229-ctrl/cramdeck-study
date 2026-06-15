@@ -1,30 +1,40 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Check, Coins, Lock, Sparkles } from "lucide-react";
+import { Check, Coins, Lock, RotateCcw, Shuffle, Sparkles } from "lucide-react";
 import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { ShopSkeleton, Skeleton } from "@/components/layout/skeletons";
 import { AvatarPreview } from "@/components/avatar/avatar-preview";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useProfile } from "@/lib/hooks/use-assignments";
 import { createClient } from "@/lib/supabase/client";
-import { AVATAR_ITEMS, getAvatarConfig, PROFILE_DEFAULTS, TITLE_UNLOCKS } from "@/lib/rewards";
+import { AVATAR_ITEMS, type AvatarConfig, getAvatarConfig, PROFILE_DEFAULTS, TITLE_UNLOCKS } from "@/lib/rewards";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { friendlyErrorMessage } from "@/lib/friendly-error";
 
-const categories = ["hair", "outfit", "accessory", "background", "effect"] as const;
+const categories = ["hair", "face", "outfit", "accessory", "background", "effect", "nameplate", "badge", "pet"] as const;
+const rarityClass: Record<string, string> = {
+  Common: "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200",
+  Uncommon: "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-200",
+  Rare: "bg-sky-100 text-sky-700 dark:bg-sky-950 dark:text-sky-200",
+  Epic: "bg-fuchsia-100 text-fuchsia-700 dark:bg-fuchsia-950 dark:text-fuchsia-200",
+  Legendary: "bg-yellow-100 text-yellow-800 dark:bg-yellow-950 dark:text-yellow-200",
+};
 
 export default function AvatarPage() {
   const { data: profile, isLoading } = useProfile();
   const queryClient = useQueryClient();
   const supabase = createClient();
   const [saving, setSaving] = useState(false);
+  const [previewAvatar, setPreviewAvatar] = useState<AvatarConfig | null>(null);
 
   const avatar = getAvatarConfig(profile);
+  const visibleAvatar = previewAvatar ?? avatar;
   const points = Number(profile?.points ?? 0);
   const unlockedCosmetics = useMemo(
     () => new Set([...(profile?.unlocked_cosmetics ?? PROFILE_DEFAULTS.unlocked_cosmetics)]),
@@ -67,6 +77,7 @@ export default function AvatarPage() {
     });
 
     if (ok) toast.success(isUnlocked ? `${item.label} equipped` : `${item.label} unlocked and equipped`);
+    if (ok) setPreviewAvatar(null);
   };
 
   const equipTitle = async (title: string) => {
@@ -76,6 +87,29 @@ export default function AvatarPage() {
     }
     const ok = await updateProfile({ equipped_title: title });
     if (ok) toast.success(`${title} equipped`);
+  };
+
+  const randomizeAvatar = async () => {
+    if (!profile) return;
+    const nextAvatar = { ...avatar };
+    categories.forEach((category) => {
+      const owned = AVATAR_ITEMS.filter((item) => item.category === category && unlockedCosmetics.has(item.id));
+      const choice = owned[Math.floor(Math.random() * owned.length)];
+      if (choice) nextAvatar[category] = choice.id;
+    });
+    const ok = await updateProfile({ avatar_config: nextAvatar });
+    if (ok) {
+      setPreviewAvatar(null);
+      toast.success("Avatar randomized");
+    }
+  };
+
+  const resetAvatar = async () => {
+    const ok = await updateProfile({ avatar_config: PROFILE_DEFAULTS.avatar_config });
+    if (ok) {
+      setPreviewAvatar(null);
+      toast.success("Avatar reset to starter style");
+    }
   };
 
   if (isLoading) {
@@ -114,7 +148,17 @@ export default function AvatarPage() {
 
         <div className="grid gap-6 xl:grid-cols-[380px_1fr]">
           <div className="space-y-6">
-            <AvatarPreview profile={profile} />
+            <AvatarPreview profile={{ ...profile, avatar_config: visibleAvatar }} reaction={previewAvatar ? "wave" : "idle"} />
+            <div className="grid gap-2 sm:grid-cols-2">
+              <Button variant="outline" onClick={randomizeAvatar} disabled={saving || !profile}>
+                <Shuffle className="h-4 w-4" />
+                Randomize
+              </Button>
+              <Button variant="outline" onClick={resetAvatar} disabled={saving || !profile}>
+                <RotateCcw className="h-4 w-4" />
+                Reset
+              </Button>
+            </div>
             <Card>
               <CardHeader>
                 <CardTitle className="text-base">Equipped title</CardTitle>
@@ -179,7 +223,10 @@ export default function AvatarPage() {
                           >
                             <div className={cn("mb-3 h-12 rounded-xl border", item.color)} />
                             <div className="flex items-center justify-between gap-2">
-                              <span className="font-medium">{item.label}</span>
+                              <span>
+                                <span className="block font-medium">{item.label}</span>
+                                <span className="text-xs text-muted-foreground">{item.unlock}</span>
+                              </span>
                               {equipped ? (
                                 <Badge>Equipped</Badge>
                               ) : unlocked ? (
@@ -187,6 +234,25 @@ export default function AvatarPage() {
                               ) : (
                                 <Badge variant="outline">{item.cost} pts</Badge>
                               )}
+                            </div>
+                            <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+                              <Badge className={cn("border-transparent", rarityClass[item.rarity])}>{item.rarity}</Badge>
+                              <span className="flex gap-2">
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={(event) => {
+                                    event.stopPropagation();
+                                    setPreviewAvatar({ ...avatar, [item.category]: item.id });
+                                  }}
+                                >
+                                  Preview
+                                </Button>
+                                <Button type="button" size="sm" disabled={saving}>
+                                  {unlocked ? "Equip" : "Unlock"}
+                                </Button>
+                              </span>
                             </div>
                           </button>
                         );

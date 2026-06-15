@@ -13,6 +13,7 @@ const protectedRoutes = [
   "/test-me",
   "/games",
   "/avatar",
+  "/rewards",
 ];
 
 export async function updateSession(request: NextRequest) {

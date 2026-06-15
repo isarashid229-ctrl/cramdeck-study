@@ -1,4 +1,4 @@
-const CACHE_VERSION = "cramdeck-v2";
+const CACHE_VERSION = "cramdeck-v3";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const SCOPE_PATH = new URL(self.registration.scope).pathname.replace(/\/$/, "");
@@ -7,6 +7,7 @@ const withScope = (path) => `${SCOPE_PATH}${path}`;
 const APP_SHELL_URLS = [
   withScope("/"),
   withScope("/dashboard"),
+  withScope("/demo"),
   withScope("/courses"),
   withScope("/assignments/new"),
   withScope("/calendar"),
@@ -14,6 +15,7 @@ const APP_SHELL_URLS = [
   withScope("/test-me"),
   withScope("/games"),
   withScope("/avatar"),
+  withScope("/rewards"),
   withScope("/settings"),
   withScope("/help"),
   withScope("/offline.html"),
