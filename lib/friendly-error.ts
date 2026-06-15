@@ -37,6 +37,9 @@ export function friendlyErrorMessage(error: unknown, fallback = "Something went 
   if (lower.includes("invalid login credentials")) {
     return "The email or password is incorrect.";
   }
+  if (lower.includes("rate limit") || lower.includes("too many requests")) {
+    return "Supabase is temporarily rate limiting signups. Wait a minute, then try again.";
+  }
   if (lower.includes("email not confirmed")) {
     return "Please confirm your email before signing in.";
   }

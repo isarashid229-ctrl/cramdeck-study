@@ -28,6 +28,7 @@ function LoginForm() {
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect") || "/dashboard";
   const [loading, setLoading] = useState(false);
+  const [authMessage, setAuthMessage] = useState<{ type: "error" | "success"; text: string } | null>(null);
   const supabase = createClient();
 
   const form = useForm<LoginInput>({
@@ -37,15 +38,20 @@ function LoginForm() {
 
   const onSubmit = form.handleSubmit(async (values) => {
     setLoading(true);
+    setAuthMessage(null);
     const { error } = await supabase.auth.signInWithPassword(values);
     setLoading(false);
 
     if (error) {
-      toast.error(friendlyErrorMessage(error, "Could not sign in."));
+      const message = friendlyErrorMessage(error, "Could not sign in.");
+      setAuthMessage({ type: "error", text: message });
+      toast.error(message);
       return;
     }
 
-    toast.success("Welcome back!");
+    const message = "Welcome back!";
+    setAuthMessage({ type: "success", text: message });
+    toast.success(message);
     router.push(redirect);
     router.refresh();
   });
@@ -78,6 +84,17 @@ function LoginForm() {
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? "Signing in..." : "Sign in"}
           </Button>
+          {authMessage && (
+            <p
+              className={`rounded-lg border px-3 py-2 text-sm ${
+                authMessage.type === "error"
+                  ? "border-destructive/30 bg-destructive/10 text-destructive"
+                  : "border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
+              }`}
+            >
+              {authMessage.text}
+            </p>
+          )}
         </form>
         <p className="mt-6 text-center text-sm text-muted-foreground">
           Don&apos;t have an account?{" "}

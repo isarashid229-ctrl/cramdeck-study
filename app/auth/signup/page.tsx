@@ -32,6 +32,7 @@ type SignupInput = z.infer<typeof signupSchema>;
 export default function SignupPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [authMessage, setAuthMessage] = useState<{ type: "error" | "success"; text: string } | null>(null);
   const supabase = createClient();
 
   const form = useForm<SignupInput>({
@@ -41,6 +42,7 @@ export default function SignupPage() {
 
   const onSubmit = form.handleSubmit(async (values) => {
     setLoading(true);
+    setAuthMessage(null);
     const emailRedirectTo =
       typeof window !== "undefined"
         ? `${window.location.origin}${window.location.pathname.startsWith("/cramdeck-study") ? "/cramdeck-study" : ""}/auth/login`
@@ -56,15 +58,21 @@ export default function SignupPage() {
     setLoading(false);
 
     if (error) {
-      toast.error(friendlyErrorMessage(error, "Could not create account."));
+      const message = friendlyErrorMessage(error, "Could not create account.");
+      setAuthMessage({ type: "error", text: message });
+      toast.error(message);
       return;
     }
 
     if (data.session) {
-      toast.success("Account created. Welcome to CramDeck Scholar!");
+      const message = "Account created. Welcome to CramDeck Scholar!";
+      setAuthMessage({ type: "success", text: message });
+      toast.success(message);
       router.push("/dashboard");
     } else {
-      toast.success("Account created. Check your email to confirm, then sign in.");
+      const message = "Account created. Check your email to confirm, then sign in.";
+      setAuthMessage({ type: "success", text: message });
+      toast.success(message);
       router.push("/auth/login");
     }
     router.refresh();
@@ -113,6 +121,17 @@ export default function SignupPage() {
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? "Creating account..." : "Create account"}
             </Button>
+            {authMessage && (
+              <p
+                className={`rounded-lg border px-3 py-2 text-sm ${
+                  authMessage.type === "error"
+                    ? "border-destructive/30 bg-destructive/10 text-destructive"
+                    : "border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
+                }`}
+              >
+                {authMessage.text}
+              </p>
+            )}
           </form>
 
           <p className="mt-6 text-center text-sm text-muted-foreground">
