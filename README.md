@@ -163,6 +163,12 @@ supabase/             # SQL schema and RLS policies
 
 ## Deployment
 
+Repository:
+
+```text
+https://github.com/isarashid229-ctrl/cramdeck-study
+```
+
 ### GitHub Pages preview
 
 This repository includes a GitHub Actions workflow at `.github/workflows/deploy-pages.yml`.
@@ -178,7 +184,14 @@ GitHub Pages is useful for a public preview of the app UI at:
 https://isarashid229-ctrl.github.io/cramdeck-study/
 ```
 
-Because GitHub Pages is static hosting, it disables Next.js middleware and API routes. That means the Pages build can show the app shell, public pages, responsive layout, and client-side Supabase screens, but it is not the recommended production host for full auth redirects, server API routes, protected middleware, and OpenAI-backed actions.
+The GitHub Pages workflow uses the publishable Supabase browser variables:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+```
+
+Because GitHub Pages is static hosting, it disables Next.js middleware and API routes. That means the Pages build can show the app shell, public pages, responsive layout, and client-side Supabase screens, but it is not the recommended production host for protected middleware, server API routes, and OpenAI-backed actions.
 
 ### Production deployment
 

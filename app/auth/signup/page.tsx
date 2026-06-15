@@ -41,11 +41,16 @@ export default function SignupPage() {
 
   const onSubmit = form.handleSubmit(async (values) => {
     setLoading(true);
+    const emailRedirectTo =
+      typeof window !== "undefined"
+        ? `${window.location.origin}${window.location.pathname.startsWith("/cramdeck-study") ? "/cramdeck-study" : ""}/auth/login`
+        : undefined;
     const { data, error } = await supabase.auth.signUp({
       email: values.email,
       password: values.password,
       options: {
         data: { full_name: values.full_name },
+        emailRedirectTo,
       },
     });
     setLoading(false);

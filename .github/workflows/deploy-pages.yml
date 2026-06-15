@@ -35,8 +35,8 @@ jobs:
         env:
           GITHUB_PAGES: "true"
           NEXT_TELEMETRY_DISABLED: "1"
-          NEXT_PUBLIC_SUPABASE_URL: "https://example.supabase.co"
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: "github-pages-static-preview-key"
+          NEXT_PUBLIC_SUPABASE_URL: "https://ocpjjddwmchxcabzpjpj.supabase.co"
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: "sb_publishable_pUXSSe473LQs6BUUOJkFrQ_d3zUSGYP"
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

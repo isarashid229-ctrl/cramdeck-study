@@ -11,6 +11,20 @@ export function friendlyErrorMessage(error: unknown, fallback = "Something went 
       : "";
   const lower = message.toLowerCase();
 
+  if (
+    lower.includes("failed to fetch") ||
+    lower.includes("networkerror") ||
+    lower.includes("network request failed") ||
+    lower.includes("load failed")
+  ) {
+    return "CramDeck could not reach Supabase. Check the deployed Supabase URL/anon key and Supabase Auth allowed URLs.";
+  }
+  if (lower.includes("invalid api key") || lower.includes("apikey") || lower.includes("jwt")) {
+    return "The deployed Supabase anon key is invalid or missing. Update the deployment environment variables.";
+  }
+  if (lower.includes("redirect") && lower.includes("not allowed")) {
+    return "Supabase blocked the login redirect URL. Add this deployed app URL in Supabase Auth URL Configuration.";
+  }
   if (code === "PGRST205" || lower.includes("schema cache") || lower.includes("could not find the table")) {
     return "Database setup is incomplete. Run the Supabase setup SQL, then restart the app.";
   }
