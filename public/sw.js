@@ -1,27 +1,29 @@
-const CACHE_VERSION = "cramdeck-v1";
+const CACHE_VERSION = "cramdeck-v2";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
+const SCOPE_PATH = new URL(self.registration.scope).pathname.replace(/\/$/, "");
+const withScope = (path) => `${SCOPE_PATH}${path}`;
 
 const APP_SHELL_URLS = [
-  "/",
-  "/dashboard",
-  "/courses",
-  "/assignments/new",
-  "/calendar",
-  "/study",
-  "/test-me",
-  "/games",
-  "/avatar",
-  "/settings",
-  "/help",
-  "/offline.html",
-  "/manifest.json",
-  "/manifest.webmanifest",
-  "/icon.svg",
-  "/icon-192.png",
-  "/icon-512.png",
-  "/icon-maskable-192.png",
-  "/icon-maskable-512.png"
+  withScope("/"),
+  withScope("/dashboard"),
+  withScope("/courses"),
+  withScope("/assignments/new"),
+  withScope("/calendar"),
+  withScope("/study"),
+  withScope("/test-me"),
+  withScope("/games"),
+  withScope("/avatar"),
+  withScope("/settings"),
+  withScope("/help"),
+  withScope("/offline.html"),
+  withScope("/manifest.json"),
+  withScope("/manifest.webmanifest"),
+  withScope("/icon.svg"),
+  withScope("/icon-192.png"),
+  withScope("/icon-512.png"),
+  withScope("/icon-maskable-192.png"),
+  withScope("/icon-maskable-512.png")
 ];
 
 self.addEventListener("install", (event) => {
@@ -59,7 +61,7 @@ async function networkFirst(request) {
   } catch (error) {
     const cached = await cache.match(request);
     if (cached) return cached;
-    if (request.mode === "navigate") return caches.match("/offline.html");
+    if (request.mode === "navigate") return caches.match(withScope("/offline.html"));
     throw error;
   }
 }
@@ -95,7 +97,8 @@ self.addEventListener("fetch", (event) => {
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  const targetUrl = new URL(event.notification.data?.url || "/dashboard", self.location.origin).href;
+  const targetPath = event.notification.data?.url || withScope("/dashboard");
+  const targetUrl = new URL(targetPath, self.location.origin).href;
   event.waitUntil(
     self.clients
       .matchAll({ type: "window", includeUncontrolled: true })

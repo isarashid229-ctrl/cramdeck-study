@@ -25,7 +25,8 @@ export function PwaRuntime() {
     initializeInstallTracking();
 
     if ("serviceWorker" in navigator && process.env.NODE_ENV === "production") {
-      navigator.serviceWorker.register("/sw.js", { scope: "/" }).catch(() => {
+      const basePath = window.location.pathname.startsWith("/cramdeck-study") ? "/cramdeck-study" : "";
+      navigator.serviceWorker.register(`${basePath}/sw.js`, { scope: `${basePath}/` }).catch(() => {
         // The app still works as a website if service worker registration is blocked.
       });
     }
