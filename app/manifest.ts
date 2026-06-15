@@ -1,0 +1,63 @@
+import type { MetadataRoute } from "next";
+
+export default function manifest(): MetadataRoute.Manifest {
+  return {
+    name: "CramDeck Scholar",
+    short_name: "CramDeck",
+    description: "Academic study platform for assignments, quizzes, games, mastery tracking, and course management.",
+    id: "/dashboard",
+    start_url: "/dashboard",
+    scope: "/",
+    display: "standalone",
+    orientation: "any",
+    background_color: "#f8fafc",
+    theme_color: "#4f46e5",
+    categories: ["education", "productivity"],
+    icons: [
+      {
+        src: "/icon-192.png",
+        sizes: "192x192",
+        type: "image/png",
+        purpose: "any",
+      },
+      {
+        src: "/icon-512.png",
+        sizes: "512x512",
+        type: "image/png",
+        purpose: "any",
+      },
+      {
+        src: "/icon-maskable-192.png",
+        sizes: "192x192",
+        type: "image/png",
+        purpose: "maskable",
+      },
+      {
+        src: "/icon-maskable-512.png",
+        sizes: "512x512",
+        type: "image/png",
+        purpose: "maskable",
+      },
+    ],
+    shortcuts: [
+      {
+        name: "Add Assignment",
+        short_name: "Add",
+        url: "/assignments/new",
+        icons: [{ src: "/icon-192.png", sizes: "192x192", type: "image/png" }],
+      },
+      {
+        name: "Study Hub",
+        short_name: "Study",
+        url: "/study",
+        icons: [{ src: "/icon-192.png", sizes: "192x192", type: "image/png" }],
+      },
+      {
+        name: "Test Me",
+        short_name: "Test",
+        url: "/test-me",
+        icons: [{ src: "/icon-192.png", sizes: "192x192", type: "image/png" }],
+      },
+    ],
+  };
+}
