@@ -46,6 +46,14 @@ const demoSections = [
   { id: "avatar", label: "Avatar", icon: Wand2 },
   { id: "analytics", label: "Analytics", icon: BarChart3 },
 ] as const;
+const avatarCategories = ["hair", "face", "outfit", "accessory", "background", "effect", "nameplate", "badge", "pet"] as const;
+const rarityClass: Record<string, string> = {
+  Common: "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200",
+  Uncommon: "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-200",
+  Rare: "bg-sky-100 text-sky-700 dark:bg-sky-950 dark:text-sky-200",
+  Epic: "bg-fuchsia-100 text-fuchsia-700 dark:bg-fuchsia-950 dark:text-fuchsia-200",
+  Legendary: "bg-yellow-100 text-yellow-800 dark:bg-yellow-950 dark:text-yellow-200",
+};
 
 type DemoState = {
   points: number;
@@ -409,11 +417,11 @@ export default function DemoPage() {
                   <CardContent>
                     <Tabs defaultValue="hair">
                       <TabsList className="flex h-auto flex-wrap justify-start">
-                        {["hair", "outfit", "accessory", "background", "effect"].map((category) => (
-                          <TabsTrigger key={category} value={category} className="capitalize">{category}</TabsTrigger>
-                        ))}
-                      </TabsList>
-                      {["hair", "outfit", "accessory", "background", "effect"].map((category) => (
+                      {avatarCategories.map((category) => (
+                        <TabsTrigger key={category} value={category} className="capitalize">{category}</TabsTrigger>
+                      ))}
+                    </TabsList>
+                      {avatarCategories.map((category) => (
                         <TabsContent key={category} value={category}>
                           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
                             {AVATAR_ITEMS.filter((item) => item.category === category).map((item) => {
@@ -430,6 +438,10 @@ export default function DemoPage() {
                                   <div className="flex items-center justify-between gap-2">
                                     <span className="font-medium">{item.label}</span>
                                     <Badge variant={owned ? "secondary" : "outline"}>{owned ? "Owned" : `${item.cost} pts`}</Badge>
+                                  </div>
+                                  <div className="mt-3 flex items-center justify-between gap-2">
+                                    <Badge className={cn("border-transparent", rarityClass[item.rarity])}>{item.rarity}</Badge>
+                                    <span className="text-xs text-muted-foreground">{item.unlock}</span>
                                   </div>
                                 </button>
                               );
