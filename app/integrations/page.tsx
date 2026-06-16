@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
+import Link from "next/link";
 
 const integrations = [
   { name: "Google Classroom", type: "LMS", status: "Planned OAuth", permissions: "Classes, coursework, due dates, attachments", auth: "Google OAuth" },
@@ -42,11 +43,11 @@ export default function IntegrationsPage() {
               Connect school platforms so assignments, courses, deadlines, instructions, and study plans can appear automatically.
             </p>
           </div>
-          <Button
-            onClick={() => toast.info("Provider OAuth credentials are needed before live school sync can be enabled.")}
-          >
-            <RefreshCw className="h-4 w-4" />
-            Check sync status
+          <Button asChild>
+            <Link href="/import">
+              <RefreshCw className="h-4 w-4" />
+              Open Import Hub
+            </Link>
           </Button>
         </div>
 
@@ -84,12 +85,14 @@ export default function IntegrationsPage() {
                   </p>
                 </div>
                 <div className="mt-4 flex gap-2">
-                  <Button size="sm" variant="outline" onClick={() => toast.info(`${integration.name} connector is ready for OAuth implementation.`)}>
+                  <Button size="sm" variant="outline" asChild>
+                    <Link href="/import">
                     <KeyRound className="h-3.5 w-3.5" />
-                    Connect
+                    Configure
+                    </Link>
                   </Button>
-                  <Button size="sm" variant="ghost" disabled>
-                    Disconnect
+                  <Button size="sm" variant="ghost" onClick={() => toast.info("Disconnect controls appear after an account is connected in the Import Hub.")}>
+                    Sync status
                   </Button>
                 </div>
               </div>

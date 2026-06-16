@@ -117,6 +117,20 @@ cp .env.example .env.local
 
 Fill in your Supabase URL and anon key. `OPENAI_API_KEY` is optional; without it, CramDeck Scholar uses fallback assignment extraction and fallback quiz/game questions.
 
+Live Google Classroom and Canvas sync are optional. Manual import works without these variables, including on GitHub Pages. For real connected-account sync on a server deployment such as local Next.js or Vercel, add:
+
+```env
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+GOOGLE_REDIRECT_URI=
+CANVAS_CLIENT_ID=
+CANVAS_CLIENT_SECRET=
+MICROSOFT_CLIENT_ID=
+MICROSOFT_CLIENT_SECRET=
+```
+
+The updated `supabase/full-setup.sql` includes the integration tables: `connected_accounts`, `external_courses`, `external_assignments`, `sync_runs`, `import_batches`, and `import_candidates`.
+
 ### 4. Run the development server
 
 ```bash

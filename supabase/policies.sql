@@ -23,6 +23,12 @@ ALTER TABLE study_resources ENABLE ROW LEVEL SECURITY;
 ALTER TABLE topic_mastery ENABLE ROW LEVEL SECURITY;
 ALTER TABLE flashcards ENABLE ROW LEVEL SECURITY;
 ALTER TABLE study_plans ENABLE ROW LEVEL SECURITY;
+ALTER TABLE connected_accounts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE external_courses ENABLE ROW LEVEL SECURITY;
+ALTER TABLE external_assignments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE sync_runs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE import_batches ENABLE ROW LEVEL SECURITY;
+ALTER TABLE import_candidates ENABLE ROW LEVEL SECURITY;
 
 DROP POLICY IF EXISTS "Users can view own profile" ON profiles;
 DROP POLICY IF EXISTS "Users can insert own profile" ON profiles;
@@ -103,6 +109,30 @@ DROP POLICY IF EXISTS "Users can view own study plans" ON study_plans;
 DROP POLICY IF EXISTS "Users can insert own study plans" ON study_plans;
 DROP POLICY IF EXISTS "Users can update own study plans" ON study_plans;
 DROP POLICY IF EXISTS "Users can delete own study plans" ON study_plans;
+DROP POLICY IF EXISTS "Users can view own connected accounts" ON connected_accounts;
+DROP POLICY IF EXISTS "Users can insert own connected accounts" ON connected_accounts;
+DROP POLICY IF EXISTS "Users can update own connected accounts" ON connected_accounts;
+DROP POLICY IF EXISTS "Users can delete own connected accounts" ON connected_accounts;
+DROP POLICY IF EXISTS "Users can view own external courses" ON external_courses;
+DROP POLICY IF EXISTS "Users can insert own external courses" ON external_courses;
+DROP POLICY IF EXISTS "Users can update own external courses" ON external_courses;
+DROP POLICY IF EXISTS "Users can delete own external courses" ON external_courses;
+DROP POLICY IF EXISTS "Users can view own external assignments" ON external_assignments;
+DROP POLICY IF EXISTS "Users can insert own external assignments" ON external_assignments;
+DROP POLICY IF EXISTS "Users can update own external assignments" ON external_assignments;
+DROP POLICY IF EXISTS "Users can delete own external assignments" ON external_assignments;
+DROP POLICY IF EXISTS "Users can view own sync runs" ON sync_runs;
+DROP POLICY IF EXISTS "Users can insert own sync runs" ON sync_runs;
+DROP POLICY IF EXISTS "Users can update own sync runs" ON sync_runs;
+DROP POLICY IF EXISTS "Users can delete own sync runs" ON sync_runs;
+DROP POLICY IF EXISTS "Users can view own import batches" ON import_batches;
+DROP POLICY IF EXISTS "Users can insert own import batches" ON import_batches;
+DROP POLICY IF EXISTS "Users can update own import batches" ON import_batches;
+DROP POLICY IF EXISTS "Users can delete own import batches" ON import_batches;
+DROP POLICY IF EXISTS "Users can view own import candidates" ON import_candidates;
+DROP POLICY IF EXISTS "Users can insert own import candidates" ON import_candidates;
+DROP POLICY IF EXISTS "Users can update own import candidates" ON import_candidates;
+DROP POLICY IF EXISTS "Users can delete own import candidates" ON import_candidates;
 
 -- Profiles policies
 CREATE POLICY "Users can view own profile"
@@ -483,6 +513,103 @@ CREATE POLICY "Users can update own study plans"
 
 CREATE POLICY "Users can delete own study plans"
   ON study_plans FOR DELETE
+  USING (auth.uid() = user_id);
+
+-- Integration and import policies
+CREATE POLICY "Users can view own connected accounts"
+  ON connected_accounts FOR SELECT
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own connected accounts"
+  ON connected_accounts FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own connected accounts"
+  ON connected_accounts FOR UPDATE
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete own connected accounts"
+  ON connected_accounts FOR DELETE
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can view own external courses"
+  ON external_courses FOR SELECT
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own external courses"
+  ON external_courses FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own external courses"
+  ON external_courses FOR UPDATE
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete own external courses"
+  ON external_courses FOR DELETE
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can view own external assignments"
+  ON external_assignments FOR SELECT
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own external assignments"
+  ON external_assignments FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own external assignments"
+  ON external_assignments FOR UPDATE
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete own external assignments"
+  ON external_assignments FOR DELETE
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can view own sync runs"
+  ON sync_runs FOR SELECT
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own sync runs"
+  ON sync_runs FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own sync runs"
+  ON sync_runs FOR UPDATE
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete own sync runs"
+  ON sync_runs FOR DELETE
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can view own import batches"
+  ON import_batches FOR SELECT
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own import batches"
+  ON import_batches FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own import batches"
+  ON import_batches FOR UPDATE
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete own import batches"
+  ON import_batches FOR DELETE
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can view own import candidates"
+  ON import_candidates FOR SELECT
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own import candidates"
+  ON import_candidates FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own import candidates"
+  ON import_candidates FOR UPDATE
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete own import candidates"
+  ON import_candidates FOR DELETE
   USING (auth.uid() = user_id);
 
 -- CramDeck Scholar Supabase Storage policies

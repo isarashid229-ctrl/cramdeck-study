@@ -1,6 +1,6 @@
--- CramDeck Scholar Full Supabase Setup
--- Paste this entire file into Supabase SQL Editor and click Run.
--- It includes schema, RLS policies, storage bucket setup, storage policies, indexes, triggers, and seed data.
+-- CramDeck Scholar full Supabase setup
+-- Run this entire file in Supabase SQL Editor.
+-- It includes schema, RLS policies, and the private assignments storage bucket/policies.
 
 -- CramDeck Scholar Database Schema
 -- Run this in your Supabase SQL Editor after creating a project
@@ -381,6 +381,119 @@ CREATE TABLE IF NOT EXISTS study_plans (
   updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS connected_accounts (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  provider TEXT NOT NULL,
+  provider_user_id TEXT,
+  display_name TEXT,
+  provider_base_url TEXT,
+  access_token TEXT,
+  refresh_token TEXT,
+  token_expires_at TIMESTAMPTZ,
+  scopes TEXT[] DEFAULT ARRAY[]::TEXT[],
+  status TEXT NOT NULL DEFAULT 'needs_setup' CHECK (status IN ('connected', 'needs_setup', 'sync_failed', 'disconnected')),
+  sync_settings JSONB NOT NULL DEFAULT '{"enabled":false,"manual_approval":true,"frequency":"manual","future_only":true,"avoid_duplicates":true,"notify_new":true}'::jsonb,
+  last_synced_at TIMESTAMPTZ,
+  last_error TEXT,
+  metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+  created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+  updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+  UNIQUE (user_id, provider, provider_user_id)
+);
+
+CREATE TABLE IF NOT EXISTS external_courses (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  connected_account_id UUID REFERENCES connected_accounts(id) ON DELETE CASCADE,
+  provider TEXT NOT NULL,
+  external_id TEXT NOT NULL,
+  course_id UUID REFERENCES courses(id) ON DELETE SET NULL,
+  name TEXT NOT NULL,
+  teacher TEXT,
+  subject TEXT,
+  source_url TEXT,
+  raw_payload JSONB NOT NULL DEFAULT '{}'::jsonb,
+  last_seen_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+  updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+  UNIQUE (user_id, provider, external_id)
+);
+
+CREATE TABLE IF NOT EXISTS external_assignments (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  connected_account_id UUID REFERENCES connected_accounts(id) ON DELETE CASCADE,
+  external_course_id UUID REFERENCES external_courses(id) ON DELETE SET NULL,
+  assignment_id UUID REFERENCES assignments(id) ON DELETE SET NULL,
+  provider TEXT NOT NULL,
+  external_id TEXT NOT NULL,
+  title TEXT NOT NULL,
+  due_date TIMESTAMPTZ,
+  description TEXT,
+  source_url TEXT,
+  status TEXT NOT NULL DEFAULT 'candidate' CHECK (status IN ('candidate', 'imported', 'ignored', 'duplicate', 'updated')),
+  duplicate_of_assignment_id UUID REFERENCES assignments(id) ON DELETE SET NULL,
+  raw_payload JSONB NOT NULL DEFAULT '{}'::jsonb,
+  last_seen_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+  updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+  UNIQUE (user_id, provider, external_id)
+);
+
+CREATE TABLE IF NOT EXISTS sync_runs (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  connected_account_id UUID REFERENCES connected_accounts(id) ON DELETE SET NULL,
+  provider TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'started' CHECK (status IN ('started', 'completed', 'failed', 'needs_setup')),
+  started_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+  finished_at TIMESTAMPTZ,
+  courses_found INT NOT NULL DEFAULT 0,
+  assignments_found INT NOT NULL DEFAULT 0,
+  assignments_imported INT NOT NULL DEFAULT 0,
+  duplicates_found INT NOT NULL DEFAULT 0,
+  message TEXT,
+  error TEXT,
+  metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+  created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+  updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS import_batches (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  provider TEXT NOT NULL DEFAULT 'manual',
+  source_label TEXT,
+  status TEXT NOT NULL DEFAULT 'review' CHECK (status IN ('review', 'saved', 'partial', 'discarded')),
+  total_candidates INT NOT NULL DEFAULT 0,
+  saved_count INT NOT NULL DEFAULT 0,
+  ignored_count INT NOT NULL DEFAULT 0,
+  raw_input TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+  updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS import_candidates (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  import_batch_id UUID REFERENCES import_batches(id) ON DELETE CASCADE,
+  provider TEXT NOT NULL DEFAULT 'manual',
+  external_assignment_id UUID REFERENCES external_assignments(id) ON DELETE SET NULL,
+  assignment_id UUID REFERENCES assignments(id) ON DELETE SET NULL,
+  title TEXT NOT NULL,
+  course_name TEXT,
+  due_date TIMESTAMPTZ,
+  description TEXT,
+  estimated_minutes INT NOT NULL DEFAULT 45,
+  priority TEXT NOT NULL DEFAULT 'medium',
+  status TEXT NOT NULL DEFAULT 'review' CHECK (status IN ('review', 'saved', 'ignored', 'duplicate')),
+  duplicate_of_assignment_id UUID REFERENCES assignments(id) ON DELETE SET NULL,
+  raw_payload JSONB NOT NULL DEFAULT '{}'::jsonb,
+  created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+  updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
+);
+
 INSERT INTO avatar_items (id, category, name, cost, rarity) VALUES
   ('hair-classic', 'hair', 'Classic', 0, 'common'),
   ('hair-waves', 'hair', 'Waves', 120, 'rare'),
@@ -448,6 +561,14 @@ CREATE INDEX IF NOT EXISTS idx_study_resources_user_topic ON study_resources(use
 CREATE INDEX IF NOT EXISTS idx_topic_mastery_user_topic ON topic_mastery(user_id, topic_tag);
 CREATE INDEX IF NOT EXISTS idx_flashcards_user_topic ON flashcards(user_id, topic_tag);
 CREATE INDEX IF NOT EXISTS idx_study_plans_user_status ON study_plans(user_id, status, scheduled_for);
+CREATE INDEX IF NOT EXISTS idx_connected_accounts_user_provider ON connected_accounts(user_id, provider);
+CREATE INDEX IF NOT EXISTS idx_connected_accounts_status ON connected_accounts(user_id, status);
+CREATE INDEX IF NOT EXISTS idx_external_courses_user_provider ON external_courses(user_id, provider);
+CREATE INDEX IF NOT EXISTS idx_external_assignments_user_provider ON external_assignments(user_id, provider);
+CREATE INDEX IF NOT EXISTS idx_external_assignments_status ON external_assignments(user_id, status);
+CREATE INDEX IF NOT EXISTS idx_sync_runs_user_provider_started ON sync_runs(user_id, provider, started_at DESC);
+CREATE INDEX IF NOT EXISTS idx_import_batches_user_status ON import_batches(user_id, status, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_import_candidates_batch_status ON import_candidates(import_batch_id, status);
 
 -- Auto-create profile on signup
 CREATE OR REPLACE FUNCTION public.handle_new_user()
@@ -523,6 +644,18 @@ DROP TRIGGER IF EXISTS flashcards_updated_at ON flashcards;
 CREATE TRIGGER flashcards_updated_at BEFORE UPDATE ON flashcards FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
 DROP TRIGGER IF EXISTS study_plans_updated_at ON study_plans;
 CREATE TRIGGER study_plans_updated_at BEFORE UPDATE ON study_plans FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
+DROP TRIGGER IF EXISTS connected_accounts_updated_at ON connected_accounts;
+CREATE TRIGGER connected_accounts_updated_at BEFORE UPDATE ON connected_accounts FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
+DROP TRIGGER IF EXISTS external_courses_updated_at ON external_courses;
+CREATE TRIGGER external_courses_updated_at BEFORE UPDATE ON external_courses FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
+DROP TRIGGER IF EXISTS external_assignments_updated_at ON external_assignments;
+CREATE TRIGGER external_assignments_updated_at BEFORE UPDATE ON external_assignments FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
+DROP TRIGGER IF EXISTS sync_runs_updated_at ON sync_runs;
+CREATE TRIGGER sync_runs_updated_at BEFORE UPDATE ON sync_runs FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
+DROP TRIGGER IF EXISTS import_batches_updated_at ON import_batches;
+CREATE TRIGGER import_batches_updated_at BEFORE UPDATE ON import_batches FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
+DROP TRIGGER IF EXISTS import_candidates_updated_at ON import_candidates;
+CREATE TRIGGER import_candidates_updated_at BEFORE UPDATE ON import_candidates FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
 
 -- Storage bucket for assignment uploads (run in Supabase dashboard or via API)
 -- INSERT INTO storage.buckets (id, name, public) VALUES ('assignments', 'assignments', false);
@@ -550,9 +683,12 @@ ALTER TABLE study_resources ENABLE ROW LEVEL SECURITY;
 ALTER TABLE topic_mastery ENABLE ROW LEVEL SECURITY;
 ALTER TABLE flashcards ENABLE ROW LEVEL SECURITY;
 ALTER TABLE study_plans ENABLE ROW LEVEL SECURITY;
-
--- Refresh PostgREST schema cache after schema changes.
-NOTIFY pgrst, 'reload schema';
+ALTER TABLE connected_accounts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE external_courses ENABLE ROW LEVEL SECURITY;
+ALTER TABLE external_assignments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE sync_runs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE import_batches ENABLE ROW LEVEL SECURITY;
+ALTER TABLE import_candidates ENABLE ROW LEVEL SECURITY;
 
 -- Row Level Security Policies for CramDeck Scholar
 -- Run after schema.sql
@@ -579,6 +715,12 @@ ALTER TABLE study_resources ENABLE ROW LEVEL SECURITY;
 ALTER TABLE topic_mastery ENABLE ROW LEVEL SECURITY;
 ALTER TABLE flashcards ENABLE ROW LEVEL SECURITY;
 ALTER TABLE study_plans ENABLE ROW LEVEL SECURITY;
+ALTER TABLE connected_accounts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE external_courses ENABLE ROW LEVEL SECURITY;
+ALTER TABLE external_assignments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE sync_runs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE import_batches ENABLE ROW LEVEL SECURITY;
+ALTER TABLE import_candidates ENABLE ROW LEVEL SECURITY;
 
 DROP POLICY IF EXISTS "Users can view own profile" ON profiles;
 DROP POLICY IF EXISTS "Users can insert own profile" ON profiles;
@@ -659,6 +801,30 @@ DROP POLICY IF EXISTS "Users can view own study plans" ON study_plans;
 DROP POLICY IF EXISTS "Users can insert own study plans" ON study_plans;
 DROP POLICY IF EXISTS "Users can update own study plans" ON study_plans;
 DROP POLICY IF EXISTS "Users can delete own study plans" ON study_plans;
+DROP POLICY IF EXISTS "Users can view own connected accounts" ON connected_accounts;
+DROP POLICY IF EXISTS "Users can insert own connected accounts" ON connected_accounts;
+DROP POLICY IF EXISTS "Users can update own connected accounts" ON connected_accounts;
+DROP POLICY IF EXISTS "Users can delete own connected accounts" ON connected_accounts;
+DROP POLICY IF EXISTS "Users can view own external courses" ON external_courses;
+DROP POLICY IF EXISTS "Users can insert own external courses" ON external_courses;
+DROP POLICY IF EXISTS "Users can update own external courses" ON external_courses;
+DROP POLICY IF EXISTS "Users can delete own external courses" ON external_courses;
+DROP POLICY IF EXISTS "Users can view own external assignments" ON external_assignments;
+DROP POLICY IF EXISTS "Users can insert own external assignments" ON external_assignments;
+DROP POLICY IF EXISTS "Users can update own external assignments" ON external_assignments;
+DROP POLICY IF EXISTS "Users can delete own external assignments" ON external_assignments;
+DROP POLICY IF EXISTS "Users can view own sync runs" ON sync_runs;
+DROP POLICY IF EXISTS "Users can insert own sync runs" ON sync_runs;
+DROP POLICY IF EXISTS "Users can update own sync runs" ON sync_runs;
+DROP POLICY IF EXISTS "Users can delete own sync runs" ON sync_runs;
+DROP POLICY IF EXISTS "Users can view own import batches" ON import_batches;
+DROP POLICY IF EXISTS "Users can insert own import batches" ON import_batches;
+DROP POLICY IF EXISTS "Users can update own import batches" ON import_batches;
+DROP POLICY IF EXISTS "Users can delete own import batches" ON import_batches;
+DROP POLICY IF EXISTS "Users can view own import candidates" ON import_candidates;
+DROP POLICY IF EXISTS "Users can insert own import candidates" ON import_candidates;
+DROP POLICY IF EXISTS "Users can update own import candidates" ON import_candidates;
+DROP POLICY IF EXISTS "Users can delete own import candidates" ON import_candidates;
 
 -- Profiles policies
 CREATE POLICY "Users can view own profile"
@@ -1041,6 +1207,103 @@ CREATE POLICY "Users can delete own study plans"
   ON study_plans FOR DELETE
   USING (auth.uid() = user_id);
 
+-- Integration and import policies
+CREATE POLICY "Users can view own connected accounts"
+  ON connected_accounts FOR SELECT
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own connected accounts"
+  ON connected_accounts FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own connected accounts"
+  ON connected_accounts FOR UPDATE
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete own connected accounts"
+  ON connected_accounts FOR DELETE
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can view own external courses"
+  ON external_courses FOR SELECT
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own external courses"
+  ON external_courses FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own external courses"
+  ON external_courses FOR UPDATE
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete own external courses"
+  ON external_courses FOR DELETE
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can view own external assignments"
+  ON external_assignments FOR SELECT
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own external assignments"
+  ON external_assignments FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own external assignments"
+  ON external_assignments FOR UPDATE
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete own external assignments"
+  ON external_assignments FOR DELETE
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can view own sync runs"
+  ON sync_runs FOR SELECT
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own sync runs"
+  ON sync_runs FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own sync runs"
+  ON sync_runs FOR UPDATE
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete own sync runs"
+  ON sync_runs FOR DELETE
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can view own import batches"
+  ON import_batches FOR SELECT
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own import batches"
+  ON import_batches FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own import batches"
+  ON import_batches FOR UPDATE
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete own import batches"
+  ON import_batches FOR DELETE
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can view own import candidates"
+  ON import_candidates FOR SELECT
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own import candidates"
+  ON import_candidates FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own import candidates"
+  ON import_candidates FOR UPDATE
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete own import candidates"
+  ON import_candidates FOR DELETE
+  USING (auth.uid() = user_id);
+
 -- CramDeck Scholar Supabase Storage policies
 -- Run this in Supabase SQL Editor after the assignments bucket exists,
 -- or run it directly to create the bucket and policies together.
@@ -1098,6 +1361,3 @@ CREATE POLICY "Users can delete own assignment files"
     AND (storage.foldername(name))[1] = auth.uid()::text
     AND (storage.foldername(name))[2] = 'assignments'
   );
-
--- Refresh PostgREST schema cache after policies and storage setup.
-NOTIFY pgrst, 'reload schema';
