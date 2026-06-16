@@ -211,18 +211,40 @@ Because GitHub Pages is static hosting, it disables Next.js middleware and API r
 
 Use Vercel for the full Next.js app. Vercel supports the middleware, API routes, and server runtime that EagleCram uses.
 
+Current Vercel production app:
+
+```text
+https://eaglecram.vercel.app
+```
+
+Production custom domains to connect in Vercel:
+
+```text
+https://eaglecram.com
+https://www.eaglecram.com
+```
+
+DNS records expected by Vercel:
+
+```text
+A      @    76.76.21.21
+A      www  76.76.21.21
+```
+
+The domain is managed at Porkbun. Disable Porkbun URL forwarding or Link-in-Bio forwarding before adding the Vercel DNS records.
+
 Required Vercel environment variables:
 
 ```env
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
 ```
 
 Optional:
 
 ```env
 OPENAI_API_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
 ```
 
 ## Security
