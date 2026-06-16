@@ -49,8 +49,17 @@ type ProviderId =
   | "moodle"
   | "teams_education"
   | "powerschool"
+  | "skyward"
   | "gmail"
   | "outlook";
+
+type SetupInfo = {
+  provider: ProviderId;
+  title: string;
+  description: string;
+  requirements: string[];
+  fallback: string;
+};
 
 type ConnectedAccount = {
   id: string;
@@ -111,6 +120,7 @@ const schoolIntegrations: {
   accent: string;
   mode: "oauth" | "token" | "manual";
   manualHint: string;
+  setup: SetupInfo;
 }[] = [
   {
     id: "google_classroom",
@@ -120,6 +130,13 @@ const schoolIntegrations: {
     accent: "bg-emerald-500",
     mode: "oauth",
     manualHint: "Paste a Google Classroom assignment post or coursework instructions.",
+    setup: {
+      provider: "google_classroom",
+      title: "Google Classroom requires OAuth setup",
+      description: "Google Classroom can connect directly when this app is running on a server deployment with Google OAuth credentials.",
+      requirements: ["GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET", "GOOGLE_REDIRECT_URI", "Classroom read scopes enabled in Google Cloud"],
+      fallback: "Paste a Classroom post, upload a screenshot, or manually add the assignment here.",
+    },
   },
   {
     id: "canvas",
@@ -129,6 +146,13 @@ const schoolIntegrations: {
     accent: "bg-red-500",
     mode: "token",
     manualHint: "Paste a Canvas assignment page, module item, or syllabus section.",
+    setup: {
+      provider: "canvas",
+      title: "Canvas uses your school URL and access token",
+      description: "Canvas can sync courses and assignments when you provide a valid Canvas URL and personal access token.",
+      requirements: ["Canvas school URL, such as https://school.instructure.com", "Canvas access token with course and assignment read access", "Server deployment for live sync"],
+      fallback: "Paste a Canvas assignment page, upload a screenshot/PDF, or manually add the assignment.",
+    },
   },
   {
     id: "schoology",
@@ -138,6 +162,13 @@ const schoolIntegrations: {
     accent: "bg-sky-500",
     mode: "manual",
     manualHint: "Paste the Schoology assignment details here.",
+    setup: {
+      provider: "schoology",
+      title: "Schoology direct sync needs school API setup",
+      description: "Schoology access depends on school API permissions, so this build uses manual import until credentials are configured.",
+      requirements: ["Schoology API access from the school", "Server-side token storage", "Provider sync route"],
+      fallback: "Paste the Schoology assignment page or upload a screenshot/PDF.",
+    },
   },
   {
     id: "blackboard",
@@ -147,6 +178,13 @@ const schoolIntegrations: {
     accent: "bg-slate-700",
     mode: "manual",
     manualHint: "Paste the Blackboard assignment page or announcement here.",
+    setup: {
+      provider: "blackboard",
+      title: "Blackboard sync requires institution API access",
+      description: "Blackboard integrations vary by school and need a school URL plus API credentials before direct sync can be enabled.",
+      requirements: ["Institution Blackboard URL", "REST API application credentials", "Server-side sync route"],
+      fallback: "Paste the Blackboard assignment page, announcement, or file export.",
+    },
   },
   {
     id: "moodle",
@@ -156,6 +194,13 @@ const schoolIntegrations: {
     accent: "bg-orange-500",
     mode: "manual",
     manualHint: "Paste the Moodle activity instructions here.",
+    setup: {
+      provider: "moodle",
+      title: "Moodle sync requires web services access",
+      description: "Moodle direct sync depends on whether your school enables Moodle web services for your account.",
+      requirements: ["Moodle site URL", "Web services token", "Enabled course/activity API permissions"],
+      fallback: "Paste the Moodle activity page or upload the assignment PDF/export.",
+    },
   },
   {
     id: "teams_education",
@@ -165,6 +210,13 @@ const schoolIntegrations: {
     accent: "bg-indigo-500",
     mode: "manual",
     manualHint: "Paste the Teams assignment message or classwork details here.",
+    setup: {
+      provider: "teams_education",
+      title: "Teams Education sync requires Microsoft Graph",
+      description: "Teams assignments need Microsoft Graph app credentials and school tenant permissions before direct sync can work.",
+      requirements: ["MICROSOFT_CLIENT_ID", "MICROSOFT_CLIENT_SECRET", "Education assignment read permissions"],
+      fallback: "Paste a Teams assignment message, upload a screenshot, or manually add the work.",
+    },
   },
   {
     id: "powerschool",
@@ -174,6 +226,29 @@ const schoolIntegrations: {
     accent: "bg-violet-500",
     mode: "manual",
     manualHint: "Paste the PowerSchool assignment row, grade detail, or deadline here.",
+    setup: {
+      provider: "powerschool",
+      title: "PowerSchool is district dependent",
+      description: "PowerSchool direct access depends on district portal settings and available APIs, so manual import is the reliable path here.",
+      requirements: ["District PowerSchool API access", "School-approved credentials", "Server-side sync adapter"],
+      fallback: "Paste a PowerSchool assignment row, upload a screenshot/PDF, or manually add the assignment.",
+    },
+  },
+  {
+    id: "skyward",
+    name: "Skyward",
+    status: "Manual fallback",
+    auth: "District dependent SIS",
+    accent: "bg-cyan-500",
+    mode: "manual",
+    manualHint: "Paste the Skyward assignment page, gradebook row, missing work notice, or deadline here.",
+    setup: {
+      provider: "skyward",
+      title: "Skyward is district dependent",
+      description: "Skyward portals vary by district and usually do not provide a student-facing public API, so this build supports a strong manual import workflow.",
+      requirements: ["District Skyward portal access", "Approved API/export access if your district offers it", "Server-side sync adapter for direct integration"],
+      fallback: "Paste Skyward assignment text, upload a screenshot, upload a PDF/export, or manually add the course and assignment.",
+    },
   },
 ];
 
@@ -213,6 +288,7 @@ export default function ImportPage() {
   const [canvasToken, setCanvasToken] = useState("");
   const [savingCanvas, setSavingCanvas] = useState(false);
   const [autoSync, setAutoSync] = useState<AutoSyncSettings>(defaultAutoSync);
+  const [setupInfo, setSetupInfo] = useState<SetupInfo | null>(null);
 
   const isStaticPagesBuild = typeof window !== "undefined" && window.location.hostname.includes("github.io");
 
@@ -351,9 +427,10 @@ export default function ImportPage() {
   };
 
   const connectGoogle = async () => {
+    const googleSetup = schoolIntegrations.find((integration) => integration.id === "google_classroom")?.setup;
     if (isStaticPagesBuild) {
+      setSetupInfo(googleSetup || null);
       toast.info("Google Classroom sync needs a server deployment with OAuth credentials. Manual import works here.");
-      openManualImport("Google Classroom", "Paste a Classroom post, coursework page, or copied instructions.");
       return;
     }
 
@@ -366,8 +443,10 @@ export default function ImportPage() {
         window.location.href = "/api/integrations/google/connect";
         return;
       }
+      if (data?.missing || data?.manualFallback) setSetupInfo(googleSetup || null);
       toast.error(data?.error || "Google Classroom could not start.");
     } catch {
+      setSetupInfo(googleSetup || null);
       toast.error("Google Classroom sync needs a server deployment. Manual import still works.");
     }
   };
@@ -484,6 +563,12 @@ export default function ImportPage() {
       text: `${source} import:\n\n`,
       created_at: new Date().toISOString(),
     });
+    setTimeout(() => document.getElementById("direct-import")?.scrollIntoView({ behavior: "smooth" }), 50);
+  };
+
+  const openUploadImport = (source: string, hint: string) => {
+    setManualHint(hint);
+    toast.info(`${source}: use the Upload tab to add a screenshot, PDF, or export.`);
     setTimeout(() => document.getElementById("direct-import")?.scrollIntoView({ behavior: "smooth" }), 50);
   };
 
@@ -679,6 +764,7 @@ export default function ImportPage() {
                 {[
                   ["Paste from Google Classroom", "Paste a copied Classroom assignment post."],
                   ["Paste from Canvas", "Paste a Canvas assignment page or module item."],
+                  ["Paste from Skyward", "Paste a Skyward gradebook row, missing work notice, or assignment page."],
                   ["Paste from email", "Paste a teacher email or announcement."],
                   ["Upload screenshot", "Use the upload tab below for screenshot text."],
                   ["Upload PDF or syllabus", "Use the upload tab below for PDFs, syllabi, or files."],
@@ -715,6 +801,8 @@ export default function ImportPage() {
                       }}
                       onSync={() => void syncProvider(integration.id)}
                       onManual={() => openManualImport(integration.name, integration.manualHint)}
+                      onUpload={() => openUploadImport(integration.name, integration.manualHint)}
+                      onSetup={() => setSetupInfo(integration.setup)}
                     />
                   ))}
                 </CardContent>
@@ -744,6 +832,9 @@ export default function ImportPage() {
                         </Button>
                         <Button size="sm" variant="outline" onClick={() => document.getElementById("direct-import")?.scrollIntoView({ behavior: "smooth" })}>
                           Upload file
+                        </Button>
+                        <Button size="sm" variant="ghost" onClick={() => openManualImport(integration.name, `Manually add assignment details from ${integration.name}.`)}>
+                          Manual add
                         </Button>
                       </div>
                     </div>
@@ -849,6 +940,53 @@ export default function ImportPage() {
           </div>
         </DialogContent>
       </Dialog>
+
+      <Dialog open={Boolean(setupInfo)} onOpenChange={(open) => !open && setSetupInfo(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{setupInfo?.title}</DialogTitle>
+          </DialogHeader>
+          {setupInfo && (
+            <div className="space-y-4">
+              <p className="text-sm text-muted-foreground">{setupInfo.description}</p>
+              <div className="rounded-xl border bg-muted/40 p-4">
+                <p className="text-sm font-medium">Setup needed</p>
+                <ul className="mt-2 space-y-2 text-sm text-muted-foreground">
+                  {setupInfo.requirements.map((requirement) => (
+                    <li key={requirement} className="flex gap-2">
+                      <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                      <span>{requirement}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="rounded-xl border border-primary/30 bg-primary/10 p-4 text-sm">
+                <p className="font-medium">Works now</p>
+                <p className="mt-1 text-muted-foreground">{setupInfo.fallback}</p>
+              </div>
+              <div className="flex flex-col gap-2 sm:flex-row">
+                <Button
+                  onClick={() => {
+                    openManualImport(providerName(setupInfo.provider), setupInfo.fallback);
+                    setSetupInfo(null);
+                  }}
+                >
+                  Paste assignment page
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    openUploadImport(providerName(setupInfo.provider), setupInfo.fallback);
+                    setSetupInfo(null);
+                  }}
+                >
+                  Upload screenshot/PDF
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </DashboardShell>
   );
 }
@@ -860,6 +998,8 @@ function IntegrationCard({
   onConnect,
   onSync,
   onManual,
+  onUpload,
+  onSetup,
 }: {
   integration: (typeof schoolIntegrations)[number];
   account?: ConnectedAccount;
@@ -867,6 +1007,8 @@ function IntegrationCard({
   onConnect: () => void;
   onSync: () => void;
   onManual: () => void;
+  onUpload: () => void;
+  onSetup: () => void;
 }) {
   const connected = account?.status === "connected";
   const failed = account?.status === "sync_failed";
@@ -894,11 +1036,14 @@ function IntegrationCard({
           </Button>
         ) : (
           <Button size="sm" variant={integration.mode === "manual" ? "outline" : "default"} onClick={onConnect}>
-            {integration.mode === "manual" ? "Import manually" : "Connect"}
+            {integration.mode === "oauth" ? "Connect" : integration.mode === "token" ? "Configure" : "Import manually"}
           </Button>
         )}
-        <Button size="sm" variant="ghost" onClick={onManual}>
-          Manual import
+        <Button size="sm" variant="ghost" onClick={integration.mode === "manual" ? onUpload : onManual}>
+          {integration.mode === "manual" ? "Upload file" : "Manual import"}
+        </Button>
+        <Button size="sm" variant="ghost" onClick={onSetup}>
+          Setup info
         </Button>
       </div>
     </div>
@@ -1051,6 +1196,7 @@ function providerName(provider: string) {
     moodle: "Moodle",
     teams_education: "Teams Education",
     powerschool: "PowerSchool",
+    skyward: "Skyward",
     gmail: "Gmail",
     outlook: "Outlook",
   };

@@ -16,6 +16,7 @@ const integrations = [
   { name: "Blackboard", type: "LMS", status: "Connector planned", permissions: "Courses, content, deadlines", auth: "REST + institution URL" },
   { name: "Moodle", type: "LMS", status: "Connector planned", permissions: "Courses, activities, deadlines", auth: "Moodle web services" },
   { name: "PowerSchool", type: "SIS", status: "Feasibility", permissions: "Classes and grade data where schools permit", auth: "District dependent" },
+  { name: "Skyward", type: "SIS", status: "Manual fallback", permissions: "District portal pages, gradebook rows, assignment exports", auth: "District dependent" },
   { name: "Gmail", type: "Email", status: "Import design ready", permissions: "Assignment emails, teacher announcements", auth: "Google OAuth" },
   { name: "Outlook", type: "Email", status: "Import design ready", permissions: "Assignment emails, calendar messages", auth: "Microsoft Graph" },
 ];
@@ -52,7 +53,7 @@ export default function IntegrationsPage() {
         </div>
 
         <div className="grid gap-4 md:grid-cols-4">
-          <Metric icon={School} label="LMS targets" value="7" />
+          <Metric icon={School} label="School systems" value="8" />
           <Metric icon={Mail} label="Email imports" value="2" />
           <Metric icon={ShieldCheck} label="Data source" value="Supabase" />
           <Metric icon={CalendarSync} label="Auto import" value="Ready path" />
