@@ -15,6 +15,7 @@ import { ClipboardPaste, Upload, PenLine, Sparkles, Info } from "lucide-react";
 import { toast } from "sonner";
 import type { AIExtractionResult } from "@/types/assignment";
 import { friendlyErrorMessage } from "@/lib/friendly-error";
+import { fallbackAssignmentExtraction } from "@/lib/assignments/fallback-extraction";
 
 const pasteSchema = z.object({
   text: z.string().min(10, "Please paste at least 10 characters of assignment text"),
@@ -49,9 +50,17 @@ export function AssignmentForm({ onExtracted }: AssignmentFormProps) {
         body: JSON.stringify(payload),
       });
 
-      const data = await res.json();
+      const data = await res.json().catch(() => null);
       if (!res.ok) {
-        throw new Error(data.error || "Failed to extract assignment");
+        const fallback = fallbackAssignmentExtraction(String(payload.text || payload.file_name || "Uploaded assignment"));
+        setNotice(data?.error || "AI extraction is unavailable here. Using clean fallback extraction for now.");
+        onExtracted(fallback, {
+          source_type: payload.source_type as string,
+          original_input: (payload.text as string) || "",
+          file_url: payload.file_url as string | undefined,
+          file: meta?.file,
+        });
+        return;
       }
 
       if (data.provider === "fallback" || data.notice) {

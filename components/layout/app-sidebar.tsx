@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   PlusCircle,
+  UploadCloud,
   Calendar,
   BookOpen,
   BarChart3,
@@ -24,23 +25,28 @@ import {
   PanelLeftOpen,
   Gift,
   Layers3,
-  PlugZap,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { ThemeModeToggle } from "./theme-mode-toggle";
+import { QuickAddDialog } from "./quick-add-dialog";
 
 const navSections = [
   {
-    label: "Main",
+    label: "Home",
     items: [
       { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+    ],
+  },
+  {
+    label: "Planning",
+    items: [
+      { href: "/import", label: "Import Hub", icon: UploadCloud },
       { href: "/calendar", label: "Calendar", icon: Calendar },
       { href: "/assignments", label: "Assignments", icon: ListTodo },
       { href: "/courses", label: "Courses", icon: BookOpen },
-      { href: "/integrations", label: "Integrations", icon: PlugZap },
     ],
   },
   {
@@ -48,8 +54,8 @@ const navSections = [
     items: [
       { href: "/study", label: "Study Hub", icon: BookOpenCheck },
       { href: "/test-me", label: "Test Me", icon: BrainCircuit },
-      { href: "/games", label: "Games", icon: Gamepad2 },
       { href: "/study#flashcards", label: "Flashcards", icon: Layers3 },
+      { href: "/games", label: "Games", icon: Gamepad2 },
       { href: "/assignments/new", label: "Add Assignment", icon: PlusCircle },
     ],
   },
@@ -127,6 +133,7 @@ export function AppSidebar() {
         ))}
       </nav>
       <div className="space-y-3 border-t p-4">
+        <QuickAddDialog compact={collapsed} className={cn("w-full", collapsed && "h-10 w-10")} />
         {!collapsed && <ThemeModeToggle />}
         <Button variant="ghost" className={cn("w-full gap-3 text-muted-foreground", collapsed ? "px-2" : "justify-start")} onClick={() => setCollapsed((value) => !value)}>
           {collapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}

@@ -1,14 +1,26 @@
 const titleLabelPattern =
   /\b(course|class|due date|deadline|estimated time|time estimate|priority|difficulty|teacher|requirements?|description|notes?)\s*:/gi;
+const titleStopPattern =
+  /\b(course|class|due date|deadline|estimated time|time estimate|priority|difficulty|teacher|requirements?|description|notes?|estimated|due)\s*:/i;
 
 export function cleanAssignmentTitle(input: string | null | undefined) {
-  const raw = (input || "").replace(/\s+/g, " ").trim();
+  const original = input || "";
+  const raw = original.replace(/\s+/g, " ").trim();
   if (!raw) return "Untitled assignment";
 
-  const firstLine = raw.split(/\n/).map((line) => line.trim()).find(Boolean) || raw;
-  const beforeLabels = firstLine.split(titleLabelPattern)[0]?.trim() || firstLine;
+  const usefulLine =
+    original
+      .split(/\n/)
+      .map((line) => line.trim())
+      .find((line) => line && !/^(course|class|due date|deadline|estimated time|priority|teacher)\s*:/i.test(line)) || raw;
+  const titleLabel = usefulLine.match(/^(?:title|assignment|homework|task)\s*:\s*(.+)$/i)?.[1];
+  const colonTitle = usefulLine.match(/^[A-Za-z .'-]{2,30}\s+(?:assignment|homework|project|essay|lab|quiz|test|review)\s*:\s*(.+)$/i)?.[1];
+  const firstLine = titleLabel || colonTitle || usefulLine;
+  const beforeLabels = firstLine.split(titleStopPattern)[0]?.trim() || firstLine;
   const withoutLabels = beforeLabels
     .replace(titleLabelPattern, "")
+    .replace(/^[A-Za-z .'-]{2,30}\s+(?:assignment|homework|project|essay|lab|quiz|test|review)\s*:\s*/i, "")
+    .replace(/^(?:assignment|homework|project|essay|lab|quiz|test|review)\s*:\s*/i, "")
     .replace(/\b(due|deadline)\b.*$/i, "")
     .replace(/\s+\b(write|complete|answer|submit|include|create|read|solve|analyze)\b.*$/i, "")
     .replace(/\b\d{1,2}\/\d{1,2}(?:\/\d{2,4})?.*$/i, "")

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { BookOpen, Plus, Pencil, Trash2, BrainCircuit, TrendingUp, Gamepad2 } from "lucide-react";
+import { BookOpen, Plus, Pencil, Trash2, BrainCircuit, TrendingUp, Gamepad2, UploadCloud } from "lucide-react";
 import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { CourseForm } from "@/components/courses/course-form";
 import { EmptyState } from "@/components/layout/empty-state";
@@ -101,6 +101,11 @@ export default function CoursesPage() {
           </div>
           <div className="flex gap-2">
             <Button variant="outline" asChild>
+              <Link href="/import">
+                <UploadCloud className="h-4 w-4" /> Import assignments
+              </Link>
+            </Button>
+            <Button variant="outline" asChild>
               <Link href="/test-me">
                 <BrainCircuit className="h-4 w-4" /> Test Me
               </Link>
@@ -151,7 +156,9 @@ export default function CoursesPage() {
                           style={{ backgroundColor: `${course.color}20`, borderLeft: `4px solid ${course.color}` }}
                         />
                         <div>
-                          <h3 className="font-semibold">{course.name}</h3>
+                          <Link href={`/courses/${course.id}`} className="font-semibold hover:underline">
+                            {course.name}
+                          </Link>
                           {(course.subject || course.teacher) && (
                             <p className="text-sm text-muted-foreground">{course.subject || course.teacher}</p>
                           )}
@@ -203,6 +210,12 @@ export default function CoursesPage() {
                       )}
                     </div>
                     <div className="mt-4 grid grid-cols-2 gap-2">
+                      <Button variant="outline" size="sm" asChild>
+                        <Link href={`/import?courseId=${course.id}`}>
+                          <UploadCloud className="h-4 w-4" />
+                          Import
+                        </Link>
+                      </Button>
                       <Button variant="outline" size="sm" asChild>
                         <Link href={`/test-me?courseId=${course.id}`}>
                           <BrainCircuit className="h-4 w-4" />

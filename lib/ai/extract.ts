@@ -93,7 +93,9 @@ export async function extractAssignmentFromText(text: string): Promise<AIExtract
 
 export function fallbackAssignmentExtraction(text: string): AIExtractionResult {
   const cleaned = text.replace(/\s+/g, " ").trim();
-  const titleMatch = cleaned.match(/(?:title|assignment)\s*:\s*([^.\n]+)/i);
+  const titleMatch =
+    text.match(/^(?:title|assignment|homework|task)\s*:\s*(.+)$/im) ||
+    text.match(/^[A-Za-z .'-]{2,30}\s+(?:assignment|homework|project|essay|lab|quiz|test|review)\s*:\s*(.+)$/im);
   const courseMatch = cleaned.match(/(?:course|class)\s*:\s*([^.\n]+)/i);
   const dueMatch = cleaned.match(/(?:due|deadline)\s*:?\s*([A-Za-z]+\s+\d{1,2}(?:,\s*\d{4})?|\d{1,2}\/\d{1,2}(?:\/\d{2,4})?)/i);
   const title = cleanAssignmentTitle(titleMatch?.[1] || cleaned);

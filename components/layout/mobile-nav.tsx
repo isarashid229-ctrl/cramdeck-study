@@ -2,14 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, PlusCircle, Calendar, BrainCircuit, Gamepad2, BookOpenCheck } from "lucide-react";
+import { LayoutDashboard, Calendar, BrainCircuit, Gamepad2, UploadCloud } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { QuickAddDialog } from "./quick-add-dialog";
 
 const navItems = [
   { href: "/dashboard", label: "Home", icon: LayoutDashboard },
-  { href: "/assignments/new", label: "Add", icon: PlusCircle },
+  { href: "/import", label: "Import", icon: UploadCloud },
   { href: "/calendar", label: "Calendar", icon: Calendar },
-  { href: "/study", label: "Study", icon: BookOpenCheck },
   { href: "/test-me", label: "Test", icon: BrainCircuit },
   { href: "/games", label: "Games", icon: Gamepad2 },
 ];
@@ -38,6 +38,9 @@ export function MobileNav() {
             </Link>
           );
         })}
+        <div className="flex items-center justify-center">
+          <QuickAddDialog compact className="h-11 w-11 rounded-xl" />
+        </div>
       </div>
     </nav>
   );

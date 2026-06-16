@@ -17,6 +17,7 @@ import {
   Wand2,
   Trophy,
   BookOpenCheck,
+  UploadCloud,
 } from "lucide-react";
 import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { StatCard } from "@/components/dashboard/stat-card";
@@ -125,9 +126,9 @@ export default function DashboardPage() {
           <div className="flex flex-wrap gap-2">
             <InstallAppButton />
             <Button asChild>
-              <Link href="/assignments/new">
-                <Plus className="h-4 w-4" />
-                Add assignment
+              <Link href="/import">
+                <UploadCloud className="h-4 w-4" />
+                Import assignment
               </Link>
             </Button>
             <Button variant="outline" asChild>
@@ -147,11 +148,50 @@ export default function DashboardPage() {
           <StatCard title="Study streak" value={`${studyStreak}d`} icon={Flame} variant="success" />
         </div>
 
+        <div className="grid gap-4 lg:grid-cols-3">
+          <CommandAnswer
+            label="Today"
+            title={today[0]?.title || "No due-today tasks"}
+            text={today[0] ? `Block ${formatMinutes(today[0].estimated_minutes)} for this first.` : "Use the opening to study ahead or run a quick quiz."}
+          />
+          <CommandAnswer
+            label="Due next"
+            title={upcoming[0]?.title || "Nothing scheduled"}
+            text={upcoming[0] ? `${upcoming[0].courses?.name || "Assignment"} is next in your queue.` : "Import assignments to build your upcoming list."}
+          />
+          <CommandAnswer
+            label="Behind"
+            title={overdue[0]?.title || "No overdue work"}
+            text={overdue[0] ? "Recover this before starting lower-priority work." : "Nice. No recovery queue right now."}
+          />
+          <CommandAnswer
+            label="Study next"
+            title={recommendedAssignment?.title || "Practice review"}
+            text={recommendedAssignment ? "Start with Test Me or a focused study block." : "Add material or review weak topics."}
+          />
+          <CommandAnswer
+            label="Weakest topic"
+            title={urgent[0]?.title || activeAssignments[0]?.title || "No weak topic yet"}
+            text="CramDeck refines this using assignments, missed questions, and games."
+          />
+          <CommandAnswer
+            label="Goal progress"
+            title={`${rewardProgress}% to next reward`}
+            text={`${points}/${nextRewardAt} points toward your next unlock.`}
+          />
+        </div>
+
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <Button variant="outline" className="h-12 justify-start" asChild>
+            <Link href="/import">
+              <UploadCloud className="h-4 w-4" />
+              Import
+            </Link>
+          </Button>
           <Button variant="outline" className="h-12 justify-start" asChild>
             <Link href="/assignments/new">
               <Plus className="h-4 w-4" />
-              Add Assignment
+              Manual Add
             </Link>
           </Button>
           <Button variant="outline" className="h-12 justify-start" asChild>
@@ -401,5 +441,17 @@ export default function DashboardPage() {
         </section>
       </div>
     </DashboardShell>
+  );
+}
+
+function CommandAnswer({ label, title, text }: { label: string; title: string; text: string }) {
+  return (
+    <Card className="transition-all hover:-translate-y-0.5 hover:shadow-md">
+      <CardContent className="p-4">
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{label}</p>
+        <p className="mt-2 line-clamp-1 font-semibold">{title}</p>
+        <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{text}</p>
+      </CardContent>
+    </Card>
   );
 }
