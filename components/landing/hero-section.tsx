@@ -24,7 +24,7 @@ export function HeroSection() {
           </span>
         </h1>
         <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground sm:text-xl">
-          Upload a screenshot, syllabus, or pasted instructions. CramDeck Scholar extracts the deadline,
+          Upload a screenshot, syllabus, or pasted instructions. EagleCram extracts the deadline,
           requirements, and builds your plan.
         </p>
         <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">

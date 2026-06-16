@@ -16,11 +16,11 @@ export function InstallAppButton({ variant = "outline", className }: InstallAppB
   const handleInstall = async () => {
     if (installed || standalone) return;
     if (!canInstall) {
-      toast.info("Use your browser menu to add CramDeck Scholar to your home screen or dock.");
+      toast.info("Use your browser menu to add EagleCram to your home screen or dock.");
       return;
     }
     const accepted = await install();
-    toast[accepted ? "success" : "info"](accepted ? "CramDeck Scholar installed" : "Install dismissed");
+    toast[accepted ? "success" : "info"](accepted ? "EagleCram installed" : "Install dismissed");
   };
 
   if (installed || standalone) {
@@ -35,7 +35,7 @@ export function InstallAppButton({ variant = "outline", className }: InstallAppB
   return (
     <Button variant={variant} className={className} onClick={handleInstall}>
       {canInstall ? <Download className="h-4 w-4" /> : <Smartphone className="h-4 w-4" />}
-      Install CramDeck Scholar
+      Install EagleCram
     </Button>
   );
 }

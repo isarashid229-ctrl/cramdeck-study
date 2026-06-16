@@ -1,5 +1,5 @@
--- CramDeck Scholar Learning & Review Upgrade
--- Run this in Supabase SQL Editor if your base CramDeck schema already exists.
+-- EagleCram Learning & Review Upgrade
+-- Run this in Supabase SQL Editor if your base EagleCram schema already exists.
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 

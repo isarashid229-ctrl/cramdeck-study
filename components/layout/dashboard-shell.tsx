@@ -13,7 +13,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
           <div className="sticky top-0 z-30 border-b bg-background/85 px-4 py-3 backdrop-blur">
             <div className="mx-auto flex max-w-7xl items-center justify-between gap-3">
               <div className="min-w-0">
-                <p className="text-sm font-semibold lg:hidden">CramDeck Scholar</p>
+                <p className="text-sm font-semibold lg:hidden">EagleCram</p>
                 <p className="hidden text-sm text-muted-foreground lg:block">Workspace controls</p>
               </div>
               <div className="flex items-center gap-2">

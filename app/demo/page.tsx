@@ -155,7 +155,7 @@ export default function DemoPage() {
             </Link>
             <div>
               <div className="flex flex-wrap items-center gap-2">
-                <h1 className="font-bold">CramDeck Scholar Demo</h1>
+                <h1 className="font-bold">EagleCram Demo</h1>
                 <Badge className="gap-1"><Sparkles className="h-3.5 w-3.5" /> Demo Mode</Badge>
               </div>
               <p className="text-sm text-muted-foreground">Explore a realistic student workspace without creating an account.</p>

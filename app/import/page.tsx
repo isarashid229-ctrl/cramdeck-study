@@ -846,7 +846,7 @@ export default function ImportPage() {
             <Card id="direct-import">
               <CardHeader>
                 <CardTitle>Direct import</CardTitle>
-                <CardDescription>Upload, paste, or type. CramDeck extracts the title, course, due date, requirements, tasks, priority, and study topics.</CardDescription>
+                <CardDescription>Upload, paste, or type. EagleCram extracts the title, course, due date, requirements, tasks, priority, and study topics.</CardDescription>
               </CardHeader>
               <CardContent>
                 <Tabs defaultValue="import">
@@ -919,7 +919,7 @@ export default function ImportPage() {
           </DialogHeader>
           <div className="space-y-4">
             <div className="rounded-xl border bg-muted/40 p-3 text-sm text-muted-foreground">
-              Canvas token sync works on server deployments. Add your school Canvas URL and a Canvas access token; CramDeck tests it before saving.
+              Canvas token sync works on server deployments. Add your school Canvas URL and a Canvas access token; EagleCram tests it before saving.
             </div>
             <div className="space-y-2">
               <Label htmlFor="canvas-url">School Canvas URL</Label>
@@ -1068,7 +1068,7 @@ function AutoSyncPanel({
     <div className="space-y-4">
       <div className="grid gap-3 md:grid-cols-3">
         <PipelineStep icon={BookOpen} title="Sync courses" text="Connected accounts import courses first so assignments can land in the right class." />
-        <PipelineStep icon={CheckCircle2} title="Review matches" text="CramDeck checks title, due date, course, source provider, and duplicate candidates." />
+        <PipelineStep icon={CheckCircle2} title="Review matches" text="EagleCram checks title, due date, course, source provider, and duplicate candidates." />
         <PipelineStep icon={RefreshCw} title="Manual sync now" text="Scheduled sync needs deployment cron. Manual sync works on server deployments." />
       </div>
       <div className="grid gap-3 md:grid-cols-2">

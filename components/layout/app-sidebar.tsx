@@ -14,7 +14,6 @@ import {
   Bell,
   HelpCircle,
   User,
-  Sparkles,
   LogOut,
   BrainCircuit,
   Gamepad2,
@@ -32,6 +31,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { ThemeModeToggle } from "./theme-mode-toggle";
 import { QuickAddDialog } from "./quick-add-dialog";
+import { EagleCramLogo } from "@/components/brand/eaglecram-logo";
 
 const navSections = [
   {
@@ -93,13 +93,7 @@ export function AppSidebar() {
   return (
     <aside className={cn("hidden lg:flex lg:flex-col lg:border-r lg:bg-card/80 lg:backdrop-blur", collapsed ? "lg:w-20" : "lg:w-72")}>
       <div className={cn("flex h-16 items-center gap-3 border-b px-4", collapsed ? "justify-center" : "px-6")}>
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
-          <Sparkles className="h-5 w-5" />
-        </div>
-        {!collapsed && <div>
-          <span className="block text-lg font-bold leading-tight">CramDeck Scholar</span>
-          <span className="block text-xs text-muted-foreground">Study command center</span>
-        </div>}
+        <EagleCramLogo compact={collapsed} showText={!collapsed} subtitle="Study command center" />
       </div>
       <nav className="flex-1 space-y-4 overflow-y-auto p-3">
         {navSections.map((section) => (

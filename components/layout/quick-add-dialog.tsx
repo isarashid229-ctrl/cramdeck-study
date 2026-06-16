@@ -132,7 +132,7 @@ function QuickAddContent({
           <Textarea
             id="quick-paste"
             className="min-h-36"
-            placeholder="Paste the full assignment text. CramDeck will pull out the clean title, course, due date, tasks, and study topics."
+            placeholder="Paste the full assignment text. EagleCram will pull out the clean title, course, due date, tasks, and study topics."
             value={pasteText}
             onChange={(event) => setPasteText(event.target.value)}
           />

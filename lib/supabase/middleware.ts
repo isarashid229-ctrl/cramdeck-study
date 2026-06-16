@@ -15,6 +15,7 @@ const protectedRoutes = [
   "/games",
   "/avatar",
   "/rewards",
+  "/admin",
 ];
 
 export async function updateSession(request: NextRequest) {

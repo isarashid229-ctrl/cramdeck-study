@@ -17,7 +17,7 @@ export function friendlyErrorMessage(error: unknown, fallback = "Something went 
     lower.includes("network request failed") ||
     lower.includes("load failed")
   ) {
-    return "CramDeck could not reach Supabase. Check the deployed Supabase URL/anon key and Supabase Auth allowed URLs.";
+    return "EagleCram could not reach Supabase. Check the deployed Supabase URL/anon key and Supabase Auth allowed URLs.";
   }
   if (lower.includes("invalid api key") || lower.includes("apikey") || lower.includes("jwt")) {
     return "The deployed Supabase anon key is invalid or missing. Update the deployment environment variables.";

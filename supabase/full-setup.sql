@@ -1,8 +1,8 @@
--- CramDeck Scholar full Supabase setup
+-- EagleCram full Supabase setup
 -- Run this entire file in Supabase SQL Editor.
 -- It includes schema, RLS policies, and the private assignments storage bucket/policies.
 
--- CramDeck Scholar Database Schema
+-- EagleCram Database Schema
 -- Run this in your Supabase SQL Editor after creating a project
 
 -- Enable UUID extension
@@ -518,10 +518,10 @@ ON CONFLICT (id) DO UPDATE SET
   updated_at = NOW();
 
 INSERT INTO achievements (id, name, description, points_required) VALUES
-  ('rookie-scholar', 'Rookie Scholar', 'Start your CramDeck journey.', 0),
+  ('rookie-scholar', 'Rookie Scholar', 'Start your EagleCram journey.', 0),
   ('quiz-slayer', 'Quiz Slayer', 'Earn 300 points from quizzes and study.', 300),
   ('calendar-champion', 'Calendar Champion', 'Build a strong deadline habit.', 450),
-  ('cramdeck-master', 'CramDeck Master', 'Reach 1200 total points.', 1200)
+  ('cramdeck-master', 'EagleCram Master', 'Reach 1200 total points.', 1200)
 ON CONFLICT (id) DO UPDATE SET
   name = EXCLUDED.name,
   description = EXCLUDED.description,
@@ -690,7 +690,7 @@ ALTER TABLE sync_runs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE import_batches ENABLE ROW LEVEL SECURITY;
 ALTER TABLE import_candidates ENABLE ROW LEVEL SECURITY;
 
--- Row Level Security Policies for CramDeck Scholar
+-- Row Level Security Policies for EagleCram
 -- Run after schema.sql
 
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
@@ -1304,7 +1304,7 @@ CREATE POLICY "Users can delete own import candidates"
   ON import_candidates FOR DELETE
   USING (auth.uid() = user_id);
 
--- CramDeck Scholar Supabase Storage policies
+-- EagleCram Supabase Storage policies
 -- Run this in Supabase SQL Editor after the assignments bucket exists,
 -- or run it directly to create the bucket and policies together.
 

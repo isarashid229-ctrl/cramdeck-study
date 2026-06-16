@@ -130,7 +130,7 @@ export default function GamesPage() {
   const playerProgress = Math.min(100, playerScore * 25);
   const aiProgress = Math.min(100, aiScore * 25);
   const points = Number(profile?.points ?? 0);
-  const rank = points >= 1200 ? "CramDeck Master" : points >= 600 ? "Focus Legend" : points >= 300 ? "Quiz Slayer" : "Rookie Scholar";
+  const rank = points >= 1200 ? "EagleCram Master" : points >= 600 ? "Focus Legend" : points >= 300 ? "Quiz Slayer" : "Rookie Scholar";
   const gameResources = recommendResources(currentQuestion?.topic || studyContext.topic, studyContext.courseName).slice(0, 3);
   const canPlay = Boolean(profile?.id);
   const loadingData = isLoading || coursesLoading || assignmentsLoading;

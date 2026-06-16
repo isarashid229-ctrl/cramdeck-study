@@ -102,7 +102,7 @@ export default function ProfilePage() {
       <div className="mx-auto max-w-4xl space-y-6">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Profile</h1>
-          <p className="mt-1 text-muted-foreground">Manage your profile, points, title, and CramDeck identity.</p>
+          <p className="mt-1 text-muted-foreground">Manage your profile, points, title, and EagleCram identity.</p>
         </div>
 
         <div className="grid gap-6 lg:grid-cols-[360px_1fr]">

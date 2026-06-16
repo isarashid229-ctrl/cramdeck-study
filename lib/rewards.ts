@@ -29,13 +29,13 @@ export const PROFILE_DEFAULTS = {
 };
 
 export const TITLE_UNLOCKS = [
-  { id: "Rookie Scholar", points: 0, rule: "Start your CramDeck journey" },
+  { id: "Rookie Scholar", points: 0, rule: "Start your EagleCram journey" },
   { id: "Flashcard Fighter", points: 150, rule: "Win flashcard games" },
   { id: "Quiz Slayer", points: 300, rule: "Complete quizzes" },
   { id: "Calendar Champion", points: 450, rule: "Follow calendar plans" },
   { id: "Homework Hunter", points: 600, rule: "Complete assignments" },
   { id: "Study Beast", points: 850, rule: "Maintain a study streak" },
-  { id: "CramDeck Master", points: 1200, rule: "Master the deck" },
+  { id: "EagleCram Master", points: 1200, rule: "Master the deck" },
   { id: "AI Duelist", points: 1500, rule: "Beat AI opponents" },
   { id: "Deadline Destroyer", points: 2000, rule: "Crush deadlines" },
   { id: "Focus Legend", points: 2500, rule: "Win focus sprints" },
@@ -66,7 +66,7 @@ export const AVATAR_ITEMS = [
   { id: "nameplate-legend", category: "nameplate", label: "Legend Plate", cost: 700, rarity: "Legendary", unlock: "Focus Legend or 700 points", color: "bg-yellow-200 dark:bg-yellow-950" },
   { id: "badge-rookie", category: "badge", label: "Rookie Badge", cost: 0, rarity: "Common", unlock: "Free starter item", color: "bg-slate-300 dark:bg-slate-700" },
   { id: "badge-streak", category: "badge", label: "Streak Badge", cost: 320, rarity: "Rare", unlock: "5-day streak or 320 points", color: "bg-orange-400" },
-  { id: "badge-master", category: "badge", label: "Master Badge", cost: 800, rarity: "Legendary", unlock: "CramDeck Master or 800 points", color: "bg-purple-500" },
+  { id: "badge-master", category: "badge", label: "Master Badge", cost: 800, rarity: "Legendary", unlock: "EagleCram Master or 800 points", color: "bg-purple-500" },
   { id: "pet-none", category: "pet", label: "No Sidekick", cost: 0, rarity: "Common", unlock: "Free starter item", color: "bg-muted" },
   { id: "pet-orbit", category: "pet", label: "Orbit Sidekick", cost: 520, rarity: "Epic", unlock: "520 points", color: "bg-cyan-300" },
   { id: "pet-star", category: "pet", label: "Star Sidekick", cost: 1000, rarity: "Legendary", unlock: "1000 points", color: "bg-yellow-300" },

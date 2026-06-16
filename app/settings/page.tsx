@@ -72,7 +72,7 @@ export default function SettingsPage() {
           <Card>
             <CardHeader>
               <CardTitle className="text-base">Install app</CardTitle>
-              <CardDescription>Use CramDeck Scholar from your dock, desktop, or mobile home screen.</CardDescription>
+              <CardDescription>Use EagleCram from your dock, desktop, or mobile home screen.</CardDescription>
             </CardHeader>
             <CardContent>
               <InstallAppButton className="w-full sm:w-auto" />

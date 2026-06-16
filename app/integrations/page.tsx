@@ -24,7 +24,7 @@ const integrations = [
 const syncPipeline = [
   "Connect account and store provider token securely server-side.",
   "Import courses/classes first, then assignments and due dates.",
-  "Normalize provider payloads into CramDeck Scholar courses and assignments.",
+  "Normalize provider payloads into EagleCram courses and assignments.",
   "Estimate study time, difficulty, topics, and recommended plan.",
   "Refresh on schedule and show last sync, permission scope, and disconnect controls.",
 ];
@@ -105,7 +105,7 @@ export default function IntegrationsPage() {
           <Card>
             <CardHeader>
               <CardTitle className="text-base">Auto assignment import pipeline</CardTitle>
-              <CardDescription>How provider data becomes student-ready work inside CramDeck Scholar.</CardDescription>
+              <CardDescription>How provider data becomes student-ready work inside EagleCram.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
               {syncPipeline.map((step, index) => (
@@ -122,13 +122,13 @@ export default function IntegrationsPage() {
           <Card>
             <CardHeader>
               <CardTitle className="text-base">Browser extension roadmap</CardTitle>
-              <CardDescription>Future “Send to CramDeck” capture from school websites.</CardDescription>
+              <CardDescription>Future “Send to EagleCram” capture from school websites.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3 text-sm">
               {[
                 "Content script detects assignment pages in Classroom, Canvas, Schoology, Blackboard, and Moodle.",
                 "Extension extracts title, course, due date, instructions, attachments, and source URL.",
-                "User clicks Send to CramDeck, then reviews or auto-imports into their account.",
+                "User clicks Send to EagleCram, then reviews or auto-imports into their account.",
                 "Background sync watches selected dashboards and sends safe deltas to Supabase-backed import APIs.",
               ].map((item) => (
                 <div key={item} className="flex gap-2 rounded-xl border p-3">

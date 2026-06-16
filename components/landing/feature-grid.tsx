@@ -13,7 +13,7 @@ import { Card, CardContent } from "@/components/ui/card";
 
 const features = [
   { icon: Brain, title: "AI assignment extraction", description: "Paste, upload, or type — AI pulls out deadlines, requirements, and grading details." },
-  { icon: Clock, title: "Smart deadline detection", description: "Never miss a due date. CramDeck flags unclear deadlines and prioritizes what's urgent." },
+  { icon: Clock, title: "Smart deadline detection", description: "Never miss a due date. EagleCram flags unclear deadlines and prioritizes what's urgent." },
   { icon: ListChecks, title: "Automatic task breakdown", description: "Big projects become 3–8 actionable steps with time estimates for each." },
   { icon: Target, title: "Priority scoring", description: "Urgent, high, medium, or low — based on due date, difficulty, and workload." },
   { icon: Calendar, title: "Calendar planning", description: "Month, week, and list views color-coded by course so you see your week at a glance." },

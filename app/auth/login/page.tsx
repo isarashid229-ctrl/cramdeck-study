@@ -6,7 +6,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,6 +14,7 @@ import { LoadingSpinner } from "@/components/layout/loading-spinner";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 import { friendlyErrorMessage } from "@/lib/friendly-error";
+import { EagleMark } from "@/components/brand/eaglecram-logo";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email"),
@@ -59,11 +59,11 @@ function LoginForm() {
   return (
     <Card className="w-full max-w-md">
       <CardHeader className="text-center">
-        <Link href="/" className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
-          <Sparkles className="h-6 w-6" />
+        <Link href="/" className="mx-auto mb-4 inline-flex" aria-label="EagleCram home">
+          <EagleMark className="h-12 w-12 rounded-2xl" />
         </Link>
         <CardTitle>Welcome back</CardTitle>
-        <CardDescription>Sign in to your CramDeck Scholar account. Your sessions stay saved after refresh.</CardDescription>
+        <CardDescription>Sign in to your EagleCram account. Your sessions stay saved after refresh.</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={onSubmit} className="space-y-4">

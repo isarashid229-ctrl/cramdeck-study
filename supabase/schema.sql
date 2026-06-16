@@ -1,4 +1,4 @@
--- CramDeck Scholar Database Schema
+-- EagleCram Database Schema
 -- Run this in your Supabase SQL Editor after creating a project
 
 -- Enable UUID extension
@@ -514,10 +514,10 @@ ON CONFLICT (id) DO UPDATE SET
   updated_at = NOW();
 
 INSERT INTO achievements (id, name, description, points_required) VALUES
-  ('rookie-scholar', 'Rookie Scholar', 'Start your CramDeck journey.', 0),
+  ('rookie-scholar', 'Rookie Scholar', 'Start your EagleCram journey.', 0),
   ('quiz-slayer', 'Quiz Slayer', 'Earn 300 points from quizzes and study.', 300),
   ('calendar-champion', 'Calendar Champion', 'Build a strong deadline habit.', 450),
-  ('cramdeck-master', 'CramDeck Master', 'Reach 1200 total points.', 1200)
+  ('cramdeck-master', 'EagleCram Master', 'Reach 1200 total points.', 1200)
 ON CONFLICT (id) DO UPDATE SET
   name = EXCLUDED.name,
   description = EXCLUDED.description,

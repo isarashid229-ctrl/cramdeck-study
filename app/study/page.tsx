@@ -220,7 +220,7 @@ export default function StudyPage() {
             </div>
             <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Study</h1>
             <p className="mt-1 max-w-2xl text-muted-foreground">
-              Review weak topics, save flashcards, and choose the next study session from your real CramDeck work.
+              Review weak topics, save flashcards, and choose the next study session from your real EagleCram work.
             </p>
           </div>
           <div className="flex flex-wrap gap-2">

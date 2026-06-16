@@ -7,8 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SqlCopyBlock } from "@/components/setup/sql-copy-block";
 
 export const metadata = {
-  title: "Database Setup | CramDeck Scholar",
-  description: "Set up the Supabase database tables and Row Level Security policies for CramDeck Scholar.",
+  title: "Database Setup | EagleCram",
+  description: "Set up the Supabase database tables and Row Level Security policies for EagleCram.",
 };
 
 async function readSqlFile(filename: string) {

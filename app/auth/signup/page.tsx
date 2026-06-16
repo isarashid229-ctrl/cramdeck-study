@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,6 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 import { friendlyErrorMessage } from "@/lib/friendly-error";
+import { EagleMark } from "@/components/brand/eaglecram-logo";
 
 const signupSchema = z
   .object({
@@ -65,7 +65,7 @@ export default function SignupPage() {
     }
 
     if (data.session) {
-      const message = "Account created. Welcome to CramDeck Scholar!";
+      const message = "Account created. Welcome to EagleCram!";
       setAuthMessage({ type: "success", text: message });
       toast.success(message);
       router.push("/dashboard");
@@ -82,11 +82,11 @@ export default function SignupPage() {
     <div className="flex min-h-screen items-center justify-center gradient-hero px-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <Link href="/" className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
-            <Sparkles className="h-6 w-6" />
+          <Link href="/" className="mx-auto mb-4 inline-flex" aria-label="EagleCram home">
+            <EagleMark className="h-12 w-12 rounded-2xl" />
           </Link>
           <CardTitle>Create your account</CardTitle>
-          <CardDescription>Create your CramDeck Scholar account to save progress, points, games, and avatar unlocks.</CardDescription>
+          <CardDescription>Create your EagleCram account to save progress, points, games, and avatar unlocks.</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={onSubmit} className="space-y-4">
@@ -117,6 +117,20 @@ export default function SignupPage() {
               {form.formState.errors.confirmPassword && (
                 <p className="mt-1 text-sm text-destructive">{form.formState.errors.confirmPassword.message}</p>
               )}
+            </div>
+            <div>
+              <Label htmlFor="fax_number">Fax number or landline number</Label>
+              <Input
+                id="fax_number"
+                className="mt-2 cursor-not-allowed opacity-80"
+                placeholder="Just kidding!"
+                disabled
+                readOnly
+                aria-describedby="fax-helper"
+              />
+              <p id="fax-helper" className="mt-1 text-xs text-muted-foreground">
+                We promise we are not living in 1998.
+              </p>
             </div>
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? "Creating account..." : "Create account"}

@@ -1,4 +1,4 @@
-# CramDeck Scholar
+# EagleCram
 
 An intelligent homework and assignment organizer for students. Upload screenshots, PDFs, syllabus pages, or paste instructions — AI extracts deadlines, requirements, and builds a step-by-step completion plan.
 
@@ -115,7 +115,7 @@ Optional: create a storage bucket named `assignments` for file uploads. `supabas
 cp .env.example .env.local
 ```
 
-Fill in your Supabase URL and anon key. `OPENAI_API_KEY` is optional; without it, CramDeck Scholar uses fallback assignment extraction and fallback quiz/game questions.
+Fill in your Supabase URL and anon key. `OPENAI_API_KEY` is optional; without it, EagleCram uses fallback assignment extraction and fallback quiz/game questions.
 
 Live Google Classroom and Canvas sync are optional. Manual import works without these variables, including on GitHub Pages. For real connected-account sync on a server deployment such as local Next.js or Vercel, add:
 
@@ -209,7 +209,7 @@ Because GitHub Pages is static hosting, it disables Next.js middleware and API r
 
 ### Production deployment
 
-Use Vercel for the full Next.js app. Vercel supports the middleware, API routes, and server runtime that CramDeck Scholar uses.
+Use Vercel for the full Next.js app. Vercel supports the middleware, API routes, and server runtime that EagleCram uses.
 
 Required Vercel environment variables:
 

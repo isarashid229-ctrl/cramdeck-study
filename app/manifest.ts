@@ -7,8 +7,8 @@ export default function manifest(): MetadataRoute.Manifest {
   const withBasePath = (path: string) => `${basePath}${path}`;
 
   return {
-    name: "CramDeck Scholar",
-    short_name: "CramDeck",
+    name: "EagleCram",
+    short_name: "EagleCram",
     description: "Academic study platform for assignments, quizzes, games, mastery tracking, and course management.",
     id: withBasePath("/dashboard"),
     start_url: withBasePath("/dashboard"),

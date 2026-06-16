@@ -27,7 +27,7 @@ export function PwaInstallPrompt() {
           <Download className="h-4 w-4" />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-medium">Install CramDeck Scholar</p>
+          <p className="text-sm font-medium">Install EagleCram</p>
           <p className="mt-1 text-xs text-muted-foreground">Open faster from your device home screen.</p>
           <div className="mt-3 flex gap-2">
             <Button

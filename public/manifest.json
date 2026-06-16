@@ -1,6 +1,6 @@
 {
-  "name": "CramDeck Scholar",
-  "short_name": "CramDeck",
+  "name": "EagleCram",
+  "short_name": "EagleCram",
   "description": "Academic study platform for assignments, quizzes, games, mastery tracking, and course management.",
   "id": "/dashboard",
   "start_url": "/dashboard",

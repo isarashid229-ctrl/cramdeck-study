@@ -1,18 +1,17 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { EagleMark } from "@/components/brand/eaglecram-logo";
 import { cn } from "@/lib/utils";
 
 export function Skeleton({ className }: { className?: string }) {
   return <div className={cn("animate-pulse rounded-xl bg-muted", className)} />;
 }
 
-export function AppLoadingScreen({ label = "Loading CramDeck Scholar..." }: { label?: string }) {
+export function AppLoadingScreen({ label = "Loading EagleCram..." }: { label?: string }) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="w-full max-w-sm text-center">
-        <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-sm">
-          <span className="text-xl font-bold">C</span>
-        </div>
-        <h1 className="text-lg font-semibold">CramDeck Scholar</h1>
+        <EagleMark className="mx-auto mb-5 h-14 w-14 rounded-2xl" />
+        <h1 className="text-lg font-semibold">EagleCram</h1>
         <p className="mt-1 text-sm text-muted-foreground">{label}</p>
         <div className="mt-6 h-2 overflow-hidden rounded-full bg-muted">
           <div className="h-full w-1/2 animate-[pulse_1.2s_ease-in-out_infinite] rounded-full bg-primary" />

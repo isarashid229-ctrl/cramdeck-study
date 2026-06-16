@@ -41,12 +41,12 @@ export function buildStudyContext({
   const scopedAssignments = selectedAssignment ? [selectedAssignment] : courseAssignments;
   const courseName = selectedCourse?.name || "All Courses";
   const scope: StudyScope = selectedAssignment ? "assignment" : resolvedCourseId ? "course" : "all";
-  const topic = selectedAssignment?.title || (selectedCourse ? `${selectedCourse.name} course review` : "CramDeck study review");
+  const topic = selectedAssignment?.title || (selectedCourse ? `${selectedCourse.name} course review` : "EagleCram study review");
   const sourceLabel = selectedAssignment
     ? `Based on ${courseName} Assignment: ${selectedAssignment.title}`
     : selectedCourse
       ? `Based on ${courseName} Course: Entire Course`
-      : "Based on your CramDeck coursework";
+      : "Based on your EagleCram coursework";
 
   const assignmentMaterial = scopedAssignments
     .map((assignment) =>
@@ -196,7 +196,7 @@ export function generateLegacyContextQuestions({
         distractorExplanations: {
           [choices[1]]: `This source selected ${keyword}, so treating it as unrelated misses the assignment evidence.`,
           [choices[2]]: "Title-only studying does not show understanding or application.",
-          [choices[3]]: "The app is testing your selected CramDeck material, not a random outside topic.",
+          [choices[3]]: "The app is testing your selected EagleCram material, not a random outside topic.",
         },
       };
       return {

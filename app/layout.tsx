@@ -11,14 +11,14 @@ import { PwaRuntime } from "@/components/layout/pwa-runtime";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
-  title: "CramDeck Scholar — Study, Quiz, and Homework Command Center",
+  title: "EagleCram — Study, Quiz, and Homework Command Center",
   description: "Academic study platform for assignments, quizzes, games, mastery tracking, and course management.",
   manifest: "/manifest.json",
-  applicationName: "CramDeck Scholar",
+  applicationName: "EagleCram",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "CramDeck",
+    title: "EagleCram",
   },
   formatDetection: {
     telephone: false,

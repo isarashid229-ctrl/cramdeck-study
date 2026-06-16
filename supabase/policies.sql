@@ -1,4 +1,4 @@
--- Row Level Security Policies for CramDeck Scholar
+-- Row Level Security Policies for EagleCram
 -- Run after schema.sql
 
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
@@ -612,7 +612,7 @@ CREATE POLICY "Users can delete own import candidates"
   ON import_candidates FOR DELETE
   USING (auth.uid() = user_id);
 
--- CramDeck Scholar Supabase Storage policies
+-- EagleCram Supabase Storage policies
 -- Run this in Supabase SQL Editor after the assignments bucket exists,
 -- or run it directly to create the bucket and policies together.
 

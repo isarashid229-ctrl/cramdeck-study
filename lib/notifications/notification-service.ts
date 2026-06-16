@@ -2,7 +2,7 @@
 
 export type NotificationIntent = "assignment_due" | "quiz_reminder" | "study_streak" | "weak_topic";
 
-export type CramDeckNotification = {
+export type EagleCramNotification = {
   intent: NotificationIntent;
   title: string;
   body: string;
@@ -19,7 +19,7 @@ export async function requestBrowserNotificationPermission() {
   return Notification.requestPermission();
 }
 
-export async function sendBrowserNotification(notification: CramDeckNotification) {
+export async function sendBrowserNotification(notification: EagleCramNotification) {
   const permission = await requestBrowserNotificationPermission();
   if (permission !== "granted") return false;
 
@@ -46,12 +46,12 @@ export async function sendBrowserNotification(notification: CramDeckNotification
   return true;
 }
 
-export function buildReminderExamples(): CramDeckNotification[] {
+export function buildReminderExamples(): EagleCramNotification[] {
   return [
     {
       intent: "assignment_due",
       title: "Assignment due soon",
-      body: "Open CramDeck Scholar to review your next deadline.",
+      body: "Open EagleCram to review your next deadline.",
       url: "/dashboard",
     },
     {

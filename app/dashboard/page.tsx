@@ -120,7 +120,7 @@ export default function DashboardPage() {
               {getGreeting()}, {profile?.full_name?.split(" ")[0] || "there"}
             </h1>
             <p className="mt-1 text-muted-foreground">
-              Your study plan, rewards, avatar, and practice tools in one place.
+              Your student command center for deadlines, study plans, rewards, and progress.
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -172,7 +172,7 @@ export default function DashboardPage() {
           <CommandAnswer
             label="Weakest topic"
             title={urgent[0]?.title || activeAssignments[0]?.title || "No weak topic yet"}
-            text="CramDeck refines this using assignments, missed questions, and games."
+            text="EagleCram refines this using assignments, missed questions, and games."
           />
           <CommandAnswer
             label="Goal progress"
@@ -339,7 +339,7 @@ export default function DashboardPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">AI study suggestion</CardTitle>
+            <CardTitle className="text-base">Recommended study</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex gap-3 rounded-xl border bg-muted/40 p-4">
@@ -387,7 +387,7 @@ export default function DashboardPage() {
         <section>
           <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold">
             <CalendarDays className="h-5 w-5 text-primary" />
-            Today
+            Today&apos;s plan
           </h2>
           {today.length === 0 ? (
             <Card>
@@ -421,7 +421,7 @@ export default function DashboardPage() {
         <section>
           <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold">
             <CheckCircle2 className="h-5 w-5 text-primary" />
-            Upcoming timeline
+            Upcoming deadlines
           </h2>
           {upcoming.length === 0 ? (
             <EmptyState

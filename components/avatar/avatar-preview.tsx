@@ -54,7 +54,7 @@ export function AvatarPreview({ profile, size = "lg", reaction = "idle" }: Avata
         </div>
         <div className="min-w-0">
           <p className={cn("truncate rounded-lg px-2 py-1 font-semibold", nameplate?.color, size === "sm" ? "text-sm" : "text-lg")}>
-            {profile?.full_name || "CramDeck Student"}
+            {profile?.full_name || "EagleCram Student"}
           </p>
           <p className="truncate text-sm text-muted-foreground">{profile?.equipped_title || "Rookie Scholar"}</p>
           <p className="mt-1 text-xs text-muted-foreground">

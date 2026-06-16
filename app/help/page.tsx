@@ -31,7 +31,7 @@ export default function HelpPage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Help & About</h1>
           <p className="mt-1 text-muted-foreground">
-            Learn how CramDeck Scholar helps you stay on top of schoolwork.
+            Learn how EagleCram helps you stay on top of schoolwork.
           </p>
         </div>
 
@@ -42,9 +42,9 @@ export default function HelpPage() {
                 <Sparkles className="h-6 w-6" />
               </div>
               <div>
-                <h2 className="text-lg font-semibold">About CramDeck Scholar</h2>
+                <h2 className="text-lg font-semibold">About EagleCram</h2>
                 <p className="mt-2 text-sm text-muted-foreground">
-                  CramDeck Scholar is an intelligent homework organizer for students. It combines
+                  EagleCram is an intelligent homework organizer for students. It combines
                   structured assignment extraction with smart scheduling, calendar views, and
                   productivity analytics — like Notion + Google Calendar + an AI assistant,
                   focused entirely on school assignments.
@@ -58,7 +58,7 @@ export default function HelpPage() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-base">
-                <Download className="h-4 w-4" /> Install CramDeck Scholar
+                <Download className="h-4 w-4" /> Install EagleCram
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
@@ -93,7 +93,7 @@ export default function HelpPage() {
                 Contact support or check our documentation for setup guides.
               </p>
               <Button variant="outline" size="sm">
-                <Mail className="mr-2 h-4 w-4" /> support@cramdeck.ai
+                <Mail className="mr-2 h-4 w-4" /> support@eaglecram.app
               </Button>
             </CardContent>
           </Card>
