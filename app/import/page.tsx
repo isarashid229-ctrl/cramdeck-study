@@ -870,6 +870,7 @@ export default function ImportPage() {
                   <TabsContent value="pipeline">
                     <AutoSyncPanel
                       settings={autoSync}
+                      accounts={accounts}
                       onChange={setAutoSync}
                       onSave={saveAutoSyncSettings}
                       onSyncAll={() => {
@@ -1052,11 +1053,13 @@ function IntegrationCard({
 
 function AutoSyncPanel({
   settings,
+  accounts,
   onChange,
   onSave,
   onSyncAll,
 }: {
   settings: AutoSyncSettings;
+  accounts: ConnectedAccount[];
   onChange: (settings: AutoSyncSettings) => void;
   onSave: () => void;
   onSyncAll: () => void;
@@ -1085,6 +1088,37 @@ function AutoSyncPanel({
               <SelectItem value="weekly">Weekly</SelectItem>
             </SelectContent>
           </Select>
+        </div>
+      </div>
+      <div className="rounded-xl border p-4">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="font-medium">Connected accounts</p>
+            <p className="text-sm text-muted-foreground">Manual sync works now for connected Google Classroom and Canvas accounts. Scheduled background sync requires deployment cron.</p>
+          </div>
+          <Badge variant={accounts.length ? "default" : "outline"}>{accounts.length ? `${accounts.length} connected` : "None connected"}</Badge>
+        </div>
+        <div className="mt-4 space-y-2">
+          {accounts.length ? (
+            accounts.map((account) => (
+              <div key={account.id} className="flex flex-col gap-2 rounded-xl bg-muted/40 p-3 text-sm sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="font-medium">{account.display_name || providerName(account.provider)}</p>
+                  <p className="text-muted-foreground">
+                    {providerName(account.provider)} · {account.last_synced_at ? `Last sync ${new Date(account.last_synced_at).toLocaleString()}` : "Not synced yet"}
+                  </p>
+                  {account.last_error && <p className="text-destructive">{account.last_error}</p>}
+                </div>
+                <Badge variant={account.status === "connected" ? "default" : account.status === "sync_failed" ? "destructive" : "outline"}>
+                  {account.status.replace("_", " ")}
+                </Badge>
+              </div>
+            ))
+          ) : (
+            <div className="rounded-xl bg-muted/40 p-3 text-sm text-muted-foreground">
+              No connected accounts yet. Google Classroom needs OAuth credentials, Canvas needs a school URL and access token, and every other platform can use manual import immediately.
+            </div>
+          )}
         </div>
       </div>
       <div className="flex flex-col gap-2 sm:flex-row">

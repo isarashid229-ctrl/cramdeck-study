@@ -9,16 +9,16 @@ import { toast } from "sonner";
 import Link from "next/link";
 
 const integrations = [
-  { name: "Google Classroom", type: "LMS", status: "Planned OAuth", permissions: "Classes, coursework, due dates, attachments", auth: "Google OAuth" },
-  { name: "Canvas LMS", type: "LMS", status: "Architecture ready", permissions: "Courses, assignments, submissions, due dates", auth: "Canvas URL + token/OAuth" },
-  { name: "Microsoft Teams Education", type: "LMS", status: "Planned OAuth", permissions: "Classes, assignments, files", auth: "Microsoft Graph" },
-  { name: "Schoology", type: "LMS", status: "Connector planned", permissions: "Courses, sections, assignments", auth: "Schoology API" },
-  { name: "Blackboard", type: "LMS", status: "Connector planned", permissions: "Courses, content, deadlines", auth: "REST + institution URL" },
-  { name: "Moodle", type: "LMS", status: "Connector planned", permissions: "Courses, activities, deadlines", auth: "Moodle web services" },
-  { name: "PowerSchool", type: "SIS", status: "Feasibility", permissions: "Classes and grade data where schools permit", auth: "District dependent" },
+  { name: "Google Classroom", type: "LMS", status: "Setup required", permissions: "Classes, coursework, due dates, attachments", auth: "Google OAuth credentials" },
+  { name: "Canvas LMS", type: "LMS", status: "Configure", permissions: "Courses, assignments, submissions, due dates", auth: "Canvas URL + access token" },
+  { name: "Microsoft Teams Education", type: "LMS", status: "Manual fallback", permissions: "Classes, assignments, files", auth: "Microsoft Graph required" },
+  { name: "Schoology", type: "LMS", status: "Manual fallback", permissions: "Courses, sections, assignments", auth: "Schoology API required" },
+  { name: "Blackboard", type: "LMS", status: "Manual fallback", permissions: "Courses, content, deadlines", auth: "REST + institution URL required" },
+  { name: "Moodle", type: "LMS", status: "Manual fallback", permissions: "Courses, activities, deadlines", auth: "Moodle web services required" },
+  { name: "PowerSchool", type: "SIS", status: "Manual fallback", permissions: "Classes and grade data where schools permit", auth: "District dependent" },
   { name: "Skyward", type: "SIS", status: "Manual fallback", permissions: "District portal pages, gradebook rows, assignment exports", auth: "District dependent" },
-  { name: "Gmail", type: "Email", status: "Import design ready", permissions: "Assignment emails, teacher announcements", auth: "Google OAuth" },
-  { name: "Outlook", type: "Email", status: "Import design ready", permissions: "Assignment emails, calendar messages", auth: "Microsoft Graph" },
+  { name: "Gmail", type: "Email", status: "Manual email import", permissions: "Assignment emails, teacher announcements", auth: "Paste/upload workflow" },
+  { name: "Outlook", type: "Email", status: "Manual email import", permissions: "Assignment emails, calendar messages", auth: "Paste/upload workflow" },
 ];
 
 const syncPipeline = [
